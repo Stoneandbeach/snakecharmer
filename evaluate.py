@@ -12,6 +12,10 @@ from {module} import solution
 global solution
 """
 
+length = 10000
+lst = list(range(length))
+n = 100
+
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
@@ -46,79 +50,50 @@ def main():
     
     # Get rough execution time in order to choose number of iterations to average over
     average_over_num = 50
-    
-    # Prime the snaketimer scope, i.e. run once to let the Python Virtual Machine do some initial optimizations,
-    # avoiding counting those in the subsequent timing runs
-    # solution_args = (lst, n)
-    # snaketimer.timeit(
-    #     stmt=solution,
-    #     args=solution_args,
-    #     number=1
-    # )
-    
-    argument_handler = SolutionHandler(id)
-    t_ordered = []
-    solution_args = argument_handler.get_args()
-    print(type(solution_args))
-    print(len(solution_args))
-    print(solution_args)
-    
+    solution_handler = SolutionHandler(id)
+    t_estimate = []
     for i in range(average_over_num):
-    
-        t_ordered.append(
+        sol_args = solution_handler.get_args()
+        t_estimate.append(
             snaketimer.timeit(
                 stmt=solution,
-                args=argument_handler.get_args(),
+                args=sol_args,
                 number=1
             )
         )
     
-    argument_handler = SolutionHandler("1")
-    t_shuffled = []
-    for i in range(average_over_num):
-        
-        t_shuffled.append(
-            snaketimer.timeit(
-                stmt=solution,
-                args=argument_handler.get_args(),
-                number=1
-            )
-        )
-    
-    plt.plot([t*1e6 for t in t_ordered], 'x', label="Ordered")
-    plt.plot([t*1e6 for t in t_shuffled], 'x', label="Shuffled")
+    plt.plot([t*1e6 for t in t_estimate], 'x', label="Prel. run")
     plt.xlabel("Run number")
     plt.ylabel("Execution time [µs]")
     plt.legend()
     plt.show()
     
-    print(f"Average runtime of\n\tordered input:{1e6*sum(t_ordered)/average_over_num:.3f}\n\tshuffled input:{1e6*sum(t_shuffled)/average_over_num:.3f}")
+    print(f"Average runtime during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
     
-    iterations = max(5, int(5 / (sum(t_ordered) / average_over_num)))
+    iterations = max(5, int(5 / (sum(t_estimate) / average_over_num)))
     print(f"Iterations: {iterations}")
     
     start = time.perf_counter()
     t = []
     for i in range(iterations):
-        
         t.append(
             snaketimer.timeit(
                 stmt=solution,
-                args=argument_handler.get_args(),
+                args=solution_handler.get_args(),
                 number=1
             )
         )
     end = time.perf_counter()
-    print(f"Time to time: {end - start:.3f} s.")
+    print(f"Total evaluation time: {end - start:.3f} s")
     
-    print(f"Total time in work function: {sum(t):.3f} s.")
+    print(f"Total time in work function: {sum(t):.3f} s")
     execution_time = 1e6*sum(t)/iterations
-    print(f"{execution_time:.3f} µs")
+    print(f"Average execution time: {execution_time:.3f} µs")
     
     # Post-processing
     print()
-    result = solution(*solution_args)
-    argument_handler.post_process(result)
+    result = solution(*solution_handler.get_args())
+    solution_handler.post_process(result)
     print()
     
     # Clean up exercise script and write to local results file

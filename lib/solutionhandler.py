@@ -1,14 +1,14 @@
 import random
 
 class SolutionHandler:
-    def __init__(self, id, *pargs, test_mode=False, **kwargs):
-        self.test_mode = test_mode
-        self.args, self.get_args, self.post_process = {
-            "1" : (self.setup_n_largest(), self.get_generic, self.post_n_largest),
-            "2" : (self.setup_clamp(), self.get_clamp, self.post_clamp),
-            "3" : (self.setup_snakespeare(), self.get_generic, self.post_snakespeare),
-            "999" : (self.setup_dummy(), self.get_generic, self.post_dummy)
+    def __init__(self, id, *pargs, **kwargs):
+        setup, self.get_args, self.post_process = {
+            "1" : (self.setup_n_largest, self.get_generic, self.post_n_largest),
+            "2" : (self.setup_clamp, self.get_generic, self.post_clamp),
+            "3" : (self.setup_snakespeare, self.get_generic, self.post_snakespeare),
+            "999" : (self.setup_dummy, self.get_generic, self.post_dummy)
         }[id]
+        self.args = setup()
         
     # 1 - N largest numbers
     def setup_n_largest(self):
@@ -18,18 +18,13 @@ class SolutionHandler:
         return (lst, n)
     
     def post_n_largest(self, results):
-        print(results)
+        print("Done.")
         
     # 2 - Clamp values
     def setup_clamp(self):
-        self.shuffle = True
-        matrix = [[random.randint(-200, 500) for _ in range(2)] for _ in range(2)]
+        self.shuffle = False
+        matrix = [[random.randint(-200, 500) for _ in range(50)] for _ in range(50)]
         return (matrix,)
-    
-    def get_clamp(self):
-        for row in self.args[0]:
-            random.shuffle(row)
-        random.shuffle(self.args[0])
     
     def post_clamp(self, results):
         print(results)
