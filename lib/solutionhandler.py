@@ -35,7 +35,7 @@ class SolutionHandler:
     # 3 - Snakespeare
     def setup_snakespeare(self):
         self.shuffle = False
-        with open("../exercise-test/sonnets.txt", "r") as fp:
+        with open("./data/sonnets.txt", "r") as fp:
             sonnets = fp.read()
         return (sonnets,)
 
