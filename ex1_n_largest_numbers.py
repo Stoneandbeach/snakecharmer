@@ -11,6 +11,9 @@ largest to smallest.
 Inputs:
 lst: list
 n: int
+
+Returns:
+largest: iterable, length n
 """
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##

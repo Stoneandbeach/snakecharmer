@@ -1,9 +1,10 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
 ## id:999|                                                   ##
-
-
-
+## -------------------EXERCISE DESCRIPTION------------------ ##
+"""
+Exercise description here.
+"""
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
 

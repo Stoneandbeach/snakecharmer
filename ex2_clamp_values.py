@@ -11,6 +11,9 @@ to 0 and a number > 255 to 255.
 
 Inputs:
 matrix: list(n * list(m * int))
+
+Returns:
+matrix: iterable(n * iterable(m * int))
 """
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##

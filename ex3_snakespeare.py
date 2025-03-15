@@ -1,6 +1,44 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
 ## id:3|                                                     ##
+## -------------------EXERCISE DESCRIPTION------------------ ##
+"""
+Snakespeare:
+Provice the input for a Markov chain-based text generator.
+Given an input of a string (incidentally containing the 
+collected sonnets of William Shakespeare), build a dictionary
+(or dictionary-like structure) with
+    key: tuple(word1, word2)
+    value: list(words...]
+where the keys should be all occurences of two consecutive
+words, and the value for that key is a list of all words that
+follow that particular combination of word1, word2. Example:
+
+'This text is an example. This text will hopefully help. An
+example is an aid.'
+
+becomes
+
+{
+    ('This', 'text'): ['is', 'will'],
+    ('text', 'is'): ['an'],
+    ('is', 'an'): ['example.', 'aid.'],
+    ('an', 'example.'): ['This'],
+    ('example.', 'This'): ['text'],
+    ('text', 'will'): ['hopefully'],
+    ('will', 'hopefully'): ['help.'],
+    ('hopefully', 'help.'): ['An'],
+    ('help.', 'An'): ['example'],
+    ('An', 'example'): ['is'],
+    ('example', 'is'): ['an']
+}
+
+Inputs:
+sonnets: str
+
+Returns:
+word_dict: dict or dict-like
+"""
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
 from collections import defaultdict
@@ -19,15 +57,7 @@ from collections import defaultdict
 ## def func(lst):                                            ##
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
-
-def solution_(sonnets):
-    words = sonnets.split()
-    
-    word_dict = defaultdict(list)
-    
-    [word_dict[(words[i], words[i+1])].append(words[i+2]) for i in range(len(words) - 2)]
-        
-    return word_dict
+""""""
 
 def solution(sonnets):
     word_dict = dict()
