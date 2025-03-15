@@ -14,24 +14,28 @@ where the keys should be all occurences of two consecutive
 words, and the value for that key is a list of all words that
 follow that particular combination of word1, word2. Example:
 
-'This text is an example. This text will hopefully help. An
-example is an aid.'
+'This text is an example text. This text will hopefully help.
+For an example is an aid.'
 
 becomes
 
 {
-    ('This', 'text'): ['is', 'will'],
-    ('text', 'is'): ['an'],
-    ('is', 'an'): ['example.', 'aid.'],
-    ('an', 'example.'): ['This'],
-    ('example.', 'This'): ['text'],
-    ('text', 'will'): ['hopefully'],
-    ('will', 'hopefully'): ['help.'],
-    ('hopefully', 'help.'): ['An'],
-    ('help.', 'An'): ['example'],
-    ('An', 'example'): ['is'],
-    ('example', 'is'): ['an']
+    ('This', 'text') ['is', 'will']
+    ('text', 'is') ['an']
+    ('is', 'an') ['example', 'aid.']
+    ('an', 'example') ['text.', 'is']
+    ('example', 'text.') ['This']
+    ('text.', 'This') ['text']
+    ('text', 'will') ['hopefully']
+    ('will', 'hopefully') ['help.']
+    ('hopefully', 'help.') ['For']
+    ('help.', 'For') ['an']
+    ('For', 'an') ['example']
+    ('example', 'is') ['an']
 }
+
+You may need to take care to remove whitespace characters,
+like \n and \t.
 
 Inputs:
 sonnets: str
@@ -41,7 +45,7 @@ word_dict: dict or dict-like
 """
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
-from collections import defaultdict
+
 
 ## ----------------------------CODE------------------------- ##
 ## Write your code below.                                    ##
@@ -57,7 +61,6 @@ from collections import defaultdict
 ## def func(lst):                                            ##
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
-""""""
 
 def solution(sonnets):
     word_dict = dict()

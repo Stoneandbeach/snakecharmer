@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import time
 import random
 from lib import snaketimer
@@ -49,6 +48,7 @@ def main():
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
     
     # Get rough execution time in order to choose number of iterations to average over
+    print(f"Estimating average execution time...")
     average_over_num = 50
     solution_handler = SolutionHandler(id)
     t_estimate = []
@@ -62,16 +62,10 @@ def main():
             )
         )
     
-    plt.plot([t*1e6 for t in t_estimate], 'x', label="Prel. run")
-    plt.xlabel("Run number")
-    plt.ylabel("Execution time [µs]")
-    plt.legend()
-    plt.show()
-    
-    print(f"Average runtime during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
+    print(f"Average execution time during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
     
     iterations = max(5, int(5 / (sum(t_estimate) / average_over_num)))
-    print(f"Estimated number of iterations to run for >= 5 s: {iterations}")
+    print(f"Estimated number of iterations needed in to run for >= 5 s: {iterations}")
     
     start = time.perf_counter()
     t = []
@@ -93,8 +87,7 @@ def main():
     # Post-processing
     print()
     result = solution(*solution_handler.get_args())
-    solution_handler.post_process(result)
-    print()
+    print(solution_handler.post_process(result))
     
     # Clean up exercise script and write to local results file
     script = [line for line in script if not (line[:2]=="##" and line[-3:]=="##\n")]
