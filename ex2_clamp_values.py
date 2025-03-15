@@ -33,12 +33,10 @@ matrix: list(n * list(m * int))
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
 def solution(matrix: list):
-    print(sum(matrix[0]), end=", ")
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
             if matrix[i][j] < 0:
                 matrix[i][j] = 0
             elif matrix[i][j] > 255:
                 matrix[i][j] = 255
-    print(sum(matrix[0]))
     return matrix

@@ -2,16 +2,30 @@ import dis
 import timeit
 from lib import snaketimer
 
-lst = list(range(100000))
+lst = [[-400 for _ in range(3)] for _ in range(3)]
+# lst = list(range(1000))
 
-def poppy(lst):
-    lst = sorted(lst)
+def poppy(matrix):
+    #print(f"Length of incoming list: {len(lst)}")
+    #lst.extend(list(range(10000)))
+    print(matrix)
+    print(sum(matrix[0]), end=", ")
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] < 0:
+                matrix[i][j] = 0
+            elif matrix[i][j] > 255:
+                matrix[i][j] = 255
+    print(sum(matrix[0]))
+    return matrix
 
 def main():
     
-    from snakecharmer.ex999_dummy_exercise import solution
+    from ex999_dummy_exercise import solution
     
-    number = 1000
+    print(lst)
+    
+    number = 1
     
     print("Run 1...")
     t = snaketimer.repeat(

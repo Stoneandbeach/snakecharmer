@@ -4,7 +4,7 @@ class SolutionHandler:
     def __init__(self, id, *pargs, **kwargs):
         setup, self.get_args, self.post_process = {
             "1" : (self.setup_n_largest, self.get_generic, self.post_n_largest),
-            "2" : (self.setup_clamp, self.get_generic, self.post_clamp),
+            "2" : (self.setup_clamp, self.get_clamp, self.post_clamp),
             "3" : (self.setup_snakespeare, self.get_generic, self.post_snakespeare),
             "999" : (self.setup_dummy, self.get_generic, self.post_dummy)
         }[id]
@@ -23,8 +23,11 @@ class SolutionHandler:
     # 2 - Clamp values
     def setup_clamp(self):
         self.shuffle = False
-        matrix = [[random.randint(-200, 500) for _ in range(50)] for _ in range(50)]
-        return (matrix,)
+        return ([[random.randint(-200, 500) for _ in range(50)] for _ in range(50)],)
+    
+    def get_clamp(self):
+        _matrix = self.args[0]
+        return ([row.copy() for row in _matrix],)
     
     def post_clamp(self, results):
         print(results)

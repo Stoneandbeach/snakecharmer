@@ -71,7 +71,7 @@ def main():
     print(f"Average runtime during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
     
     iterations = max(5, int(5 / (sum(t_estimate) / average_over_num)))
-    print(f"Iterations: {iterations}")
+    print(f"Estimated number of iterations to run for >= 5 s: {iterations}")
     
     start = time.perf_counter()
     t = []
