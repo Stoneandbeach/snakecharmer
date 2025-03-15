@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import time
 import random
 from lib import snaketimer
-from lib.solutionhandler import SolutionHandler
+from lib.solutionhandler import TestRunHandler
 from argparse import ArgumentParser
 import os, sys
 sys.path.append(os.getcwd())
@@ -41,12 +41,15 @@ def main():
             break
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
     
-    argument_handler = SolutionHandler(id, test_mode=True)
-    solution_args = argument_handler.get_args()
-    result = solution(*solution_args)
-    print(f"Testing exercise {id}. Test output below:")
+    solution_handler = TestRunHandler(id)
+    solution_args = solution_handler.get_args()
+    print(f"Testing exercise {id}.")
     print()
-    print(result)
+    print(f"Sample input: {solution_args}")
+    print()
+    result = solution(*solution_args)
+    print("Result:")
+    print(solution_handler.post_process(result))
     
     
      
