@@ -20,7 +20,6 @@ largest: iterable, length n
 
 
 
-
 ## ----------------------------CODE------------------------- ##
 ## Write your code below.                                    ##
 ## The solution(...) function is entry point to your code.   ##
@@ -37,14 +36,15 @@ largest: iterable, length n
 ##       lst = sorted(lst)   <--- also yes                   ##
 
 def solution(lst, n):
-    lst = sorted(lst, reverse=True)
-    return lst[:n]
-
-def solution_(lst, n):
-    largest = [0 for _ in range(n)]
-    for num in lst:
-        if num > min(largest):
-            largest.pop()
-            largest.append(num)
-        largest = sorted(largest, reverse=True)
+    largest = []
+    for i in (range(n)):
+        this_largest = 0
+        largest_index = 0
+        for n, num in enumerate(lst):
+            if num > this_largest:
+                this_largest = num
+                largest_index = n
+        largest.append(this_largest)
+        lst.pop(largest_index)
     return largest
+                

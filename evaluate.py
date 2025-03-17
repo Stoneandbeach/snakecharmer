@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import time
 import random
 from lib import snaketimer
@@ -11,6 +12,7 @@ from {module} import solution
 global solution
 """
 
+time_to_evaluate = 10
 length = 10000
 lst = list(range(length))
 n = 100
@@ -18,6 +20,9 @@ n = 100
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
+    parser.add_argument("--dry-run", action="store_true", default=False)
+    parser.add_argument("--skip-numpy", action="store_true", default=False)
+    parser.add_argument("--plot-estimation", action="store_true", default=False)
     return parser.parse_args()
 
 def main():
@@ -39,18 +44,23 @@ def main():
     # Find flair in script file
     flair = ""
         
-    # Fetch exercise id to setup evaluation
+    # Fetch exercise id and analyse imports to setup evaluation
     id = None
+    use_numpy = False
     for line in script:
         if line[:6] == "## id:":
             id = line[6:].split("|")[0]
-            break
+        if not args.skip_numpy and "import" in line and "numpy" in line and not line[0] == "#":
+            use_numpy = True
+            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
+To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
+    
     
     # Get rough execution time in order to choose number of iterations to average over
     print(f"Estimating average execution time...")
     average_over_num = 50
-    solution_handler = SolutionHandler(id)
+    solution_handler = SolutionHandler(id, use_numpy=use_numpy)
     t_estimate = []
     for i in range(average_over_num):
         sol_args = solution_handler.get_args()
@@ -64,8 +74,19 @@ def main():
     
     print(f"Average execution time during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
     
-    iterations = max(5, int(5 / (sum(t_estimate) / average_over_num)))
-    print(f"Estimated number of iterations needed in to run for >= 5 s: {iterations}")
+    iterations = max(5, int(time_to_evaluate / (sum(t_estimate) / average_over_num)))
+    if iterations > 100000:
+        iterations = 100000
+        print(f"Running 100000 iterations.")
+    else:
+        print(f"Estimated number of iterations needed in order to run for >= {time_to_evaluate} s: {iterations}")
+    
+    if args.plot_estimation:
+        plt.plot([t*1e6 for t in t_estimate], 'x', label="Prel. run")
+        plt.xlabel("Run number")
+        plt.ylabel("Execution time [µs]")
+        plt.legend()
+        plt.show()
     
     start = time.perf_counter()
     t = []
@@ -99,14 +120,15 @@ def main():
         "Code:\n"
     ] + script + ["\n\n"])
 
-    run_nr = 0
-    result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "result"])])
-    while os.path.exists(result_file_path):
-        run_nr += 1
+    if not args.dry_run:
+        run_nr = 0
         result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "result"])])
-    with open(result_file_path, "w") as fp:
-        fp.write(script)
-    print(f"Wrote to file: {result_file_path}")
+        while os.path.exists(result_file_path):
+            run_nr += 1
+            result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "result"])])
+        with open(result_file_path, "w") as fp:
+            fp.write(script)
+        print(f"Wrote to file: {result_file_path}")
     
     
 if __name__ == "__main__":

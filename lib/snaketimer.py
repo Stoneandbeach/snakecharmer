@@ -2,8 +2,8 @@
 === Custom version of the Python standard library timeit. ===
 
 Updated to be able to time functions that manipulate input objects in place.
-The original timeit fails if, for example, statement pops items from a list
-created in the setup.
+The original timeit fails if, for example, the timed statement pops items
+from a list created in the setup.
 
 For this to work, it requires stmt to be a callable, and the arguments to
 that callable to be provided in args.
@@ -70,7 +70,7 @@ import time
 
 __all__ = ["Timer", "timeit", "repeat", "default_timer"]
 
-dummy_src_name = "<timeit-src>"
+dummy_src_name = "<snaketimer-src>"
 default_number = 1000000
 default_repeat = 5
 default_timer = time.perf_counter

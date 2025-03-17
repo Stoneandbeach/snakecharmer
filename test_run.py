@@ -15,6 +15,7 @@ global solution
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
+    parser.add_argument("--skip-numpy", action="store_true", default=False)
     return parser.parse_args()
 
 def main():
@@ -35,13 +36,17 @@ def main():
         
     # Fetch exercise id to setup evaluation
     id = None
+    use_numpy = False
     for line in script:
         if line[:6] == "## id:":
             id = line[6:].split("|")[0]
-            break
+        if not args.skip_numpy and "import" in line and "numpy" in line and not line[0] == "#":
+            use_numpy = True
+            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
+To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
     
-    solution_handler = TestRunHandler(id)
+    solution_handler = TestRunHandler(id, use_numpy=use_numpy)
     solution_args = solution_handler.get_args()
     print(f"Testing exercise {id}.")
     print()
