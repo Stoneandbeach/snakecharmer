@@ -20,7 +20,6 @@ matrix: iterable(n * iterable(m * int))
 
 
 
-
 ## ----------------------------CODE------------------------- ##
 ## Write your code below.                                    ##
 ## The solution(...) function is entry point to your code.   ##
@@ -35,6 +34,7 @@ matrix: iterable(n * iterable(m * int))
 ## def func(lst):                                            ##
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
+
 def solution(matrix: list):
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
