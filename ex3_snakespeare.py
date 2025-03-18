@@ -2,47 +2,47 @@
 ## Exercise id number - don't change this!                   ##
 ## id:3|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-"""
-Snakespeare:
-Provice the input for a Markov chain-based text generator.
-Given an input of a string (incidentally containing the 
-collected sonnets of William Shakespeare), build a dictionary
-(or dictionary-like structure) with
-    key: tuple(word1, word2)
-    value: list(words...]
-where the keys should be all occurences of two consecutive
-words, and the value for that key is a list of all words that
-follow that particular combination of word1, word2. Example:
-
-'This text is an example text. This text will hopefully help.
-For an example is an aid.'
-
-becomes
-
-{
-    ('This', 'text') ['is', 'will']
-    ('text', 'is') ['an']
-    ('is', 'an') ['example', 'aid.']
-    ('an', 'example') ['text.', 'is']
-    ('example', 'text.') ['This']
-    ('text.', 'This') ['text']
-    ('text', 'will') ['hopefully']
-    ('will', 'hopefully') ['help.']
-    ('hopefully', 'help.') ['For']
-    ('help.', 'For') ['an']
-    ('For', 'an') ['example']
-    ('example', 'is') ['an']
-}
-
-You may need to take care to remove whitespace characters,
-like \n and \t.
-
-Inputs:
-sonnets: str
-
-Returns:
-word_dict: dict or dict-like
-"""
+## Snakespeare:
+## Provide the input for a Markov chain-based text generator.##
+## Given an input of a string (incidentally containing the   ##
+## collected sonnets of William Shakespeare), build a        ##
+## dictionary(or dictionary-like structure) with             ##
+##     key: tuple(word1, word2)                              ##
+##     value: list(words...]                                 ##
+## where the keys should be all occurences of two consecutive##
+## words, and the value for that key is a list of all words  ##
+## thatfollow that particular combination of word1, word2.   ##
+## Example:                                                  ##
+##                                                           ##
+## 'This text is an example text. This text will hopefully   ##
+## help. For an example is an aid.'                          ##
+##                                                           ##
+## becomes                                                   ##
+##                                                           ##
+## {                                                         ##
+##     ('This', 'text') ['is', 'will']                       ##
+##     ('text', 'is') ['an']                                 ##
+##     ('is', 'an') ['example', 'aid.']                      ##
+##     ('an', 'example') ['text.', 'is']                     ##
+##     ('example', 'text.') ['This']                         ##
+##     ('text.', 'This') ['text']                            ##
+##     ('text', 'will') ['hopefully']                        ##
+##     ('will', 'hopefully') ['help.']                       ##
+##     ('hopefully', 'help.') ['For']                        ##
+##     ('help.', 'For') ['an']                               ##
+##     ('For', 'an') ['example']                             ##
+##     ('example', 'is') ['an']                              ##
+## }                                                         ##
+##                                                           ##
+## You may need to take care to remove whitespace characters,##
+## like \n and \t.                                           ##
+##                                                           ##
+## Inputs:                                                   ##
+## sonnets: str                                              ##
+##                                                           ##
+## Returns:                                                  ##
+## word_dict: dict or dict-like                              ##
+##                                                           ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
 

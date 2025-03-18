@@ -2,19 +2,18 @@
 ## Exercise id number - don't change this!                   ##
 ## id:1|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-"""
-n_largest_numbers:
-Given an input list 'lst' and integer 'n', find the n largest
-numbers in lst. Return a list with the those number sorted from
-largest to smallest.
-
-Inputs:
-lst: list
-n: int
-
-Returns:
-largest: iterable, length n
-"""
+## n_largest_numbers:                                        ##
+## Given an input list 'lst' and integer 'n', find the n     ##
+## largest numbers in lst. Return a list with the those      ##
+## number sorted from largest to smallest.                   ##
+##                                                           ##
+## Inputs:                                                   ##
+## lst: list                                                 ##
+## n: int                                                    ##
+##                                                           ##
+## Returns:                                                  ##
+## largest: iterable, length n                               ##
+##                                                           ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
 
