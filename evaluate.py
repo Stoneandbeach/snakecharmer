@@ -138,10 +138,19 @@ To prevent this, add '--skip-numpy' when you run this script.")
     script = script[first_line:]
 
     timestamp = datetime.now().strftime("%H:%M:%S")
+    with open(os.sep.join(["config", "config.json"]), "r") as fp:
+        config = json.load(fp)
+    
+    if "user" not in config.keys():
+        print(f"No username found in config file. Did you run 'python setup.py'?")
+        print(f"You shall henceworth be known as 'USER_UNKNOWN'.")
+        user = "USER_UNKNOWN"
+    else:
+        user = config["user"]
 
     output = {
         "exercise" : id,
-        "user" : "Sten",
+        "user" : user,
         "time" : f"{execution_time:.1f} ± {std:.1f} µs",
         "flair" : flair,
         "timestamp" : timestamp,
@@ -162,7 +171,8 @@ To prevent this, add '--skip-numpy' when you run this script.")
         while upload not in ["yes", "no"]:
             upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower()
         if upload == "yes":
-            r = requests.put("".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name]), headers={'content-type': 'application/json'}, data=output)
+            url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
+            r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
             if r.status_code == requests.codes.ok:
                 print("Results uploaded.")
             else:

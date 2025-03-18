@@ -55,7 +55,10 @@ Sten
 install_note = """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To complete installation, please run the following commands. This will install all requi-
-red Python libraries. First, activate the virtual environment:
+red Python libraries. First, create and activate a virual environment. Be sure to use a
+version of Python that is 3.11 or later.
+
+> python3.11 -m venv .venv             # Replace 3.11 with whatever version you might have
 
 On Linux/MacOS:
 > source .venv/bin/activate
@@ -101,21 +104,18 @@ def main():
         if proceed.lower() != "yes":
             sys.exit("Setup aborted.")
     
-    if not os.path.exists("".join([".venv", os.sep])):
-        print("Creating virtual environment in .venv.")
-        try:
-            string = subprocess.check_output(["python", "-m", "venv", ".venv"], text=True)
-        except:
-            sys.exit("Failed to create virtual environment. Aborting. You can try creating it manually using 'python -m venv .venv' and then rerunning this setup script.")
-    
-    with open(os.sep.join(["config", "config.json"]), "r") as fp:
-        config = json.load(fp)
+    config_file = os.sep.join(["config", "config.json"])
+    if os.path.exists(config_file):
+        with open(config_file, "r") as fp:
+            config = json.load(fp)
+    else:
+        config = {}
     if not "user" in config.keys():
         user = input("Please select a username: ")
         config["user"] = user
         print()
     
-    with open(os.sep.join(["config", "config.json"]), "w") as fp:
+    with open(config_file, "w") as fp:
         json.dump(config, fp, indent=2)
     
     print("If you need a reminder on how to run the exercises, run 'python help.py'.")
