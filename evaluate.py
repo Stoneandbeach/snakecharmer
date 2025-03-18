@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import html
 import time
+from datetime import datetime
 import json
 import requests
 from lib import snaketimer
@@ -94,7 +94,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             )
         )
     
-    print(f"Average execution time during estimation: {1e6*sum(t_estimate)/average_over_num:.3f} µs.")
+    print(f"Average execution time during estimation: {1e6*sum(t_estimate)/average_over_num:.1f} µs.")
     
     iterations = max(5, int(time_to_evaluate / (sum(t_estimate) / average_over_num)))
     if iterations > 100000:
@@ -110,6 +110,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
         plt.legend()
         plt.show()
     
+    # Main timing loop
     start = time.perf_counter()
     t = []
     for i in range(iterations):
@@ -121,11 +122,13 @@ To prevent this, add '--skip-numpy' when you run this script.")
             )
         )
     end = time.perf_counter()
-    print(f"Total evaluation time: {end - start:.3f} s")
+    print(f"Total evaluation time: {end - start:.1f} s")
     
-    print(f"Total time in work function: {sum(t):.3f} s")
-    execution_time = 1e6*sum(t)/iterations
-    print(f"Average execution time: {execution_time:.3f} µs")
+    print(f"Total time in work function: {sum(t):.1f} s")
+    t = np.array(t)
+    execution_time = 1e6*t.sum()/iterations
+    std = 1e6*t.std()
+    print(f"Average execution time: {execution_time:.1f} ± {std:.1f} µs")
     
     # Post-processing
     print()
@@ -134,12 +137,22 @@ To prevent this, add '--skip-numpy' when you run this script.")
     
     # Clean up exercise script and write to local results file
     script = [line for line in script if not (line[:2]=="##" and line[-3:]=="##\n")]
+    first_line = 0
+    for line in script:
+        if line.isspace():
+            first_line += 1
+        else:
+            break
+    script = script[first_line:]
+
+    timestamp = datetime.now().strftime("%H:%M:%S")
 
     output = {
         "exercise" : id,
         "user" : "Sten",
-        "time" : f"{execution_time:.3f} µs",
+        "time" : f"{execution_time:.1f} ± {std:.1f} µs",
         "flair" : flair,
+        "timestamp" : timestamp,
         "code" : "".join(script)
     }
 
