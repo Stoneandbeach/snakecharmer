@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import time
 from datetime import datetime
@@ -102,13 +101,6 @@ To prevent this, add '--skip-numpy' when you run this script.")
         print(f"Running 100000 iterations.")
     else:
         print(f"Estimated number of iterations needed in order to run for >= {time_to_evaluate} s: {iterations}")
-    
-    if args.plot_estimation:
-        plt.plot([t*1e6 for t in t_estimate], 'x', label="Prel. run")
-        plt.xlabel("Run number")
-        plt.ylabel("Execution time [µs]")
-        plt.legend()
-        plt.show()
     
     # Main timing loop
     start = time.perf_counter()
