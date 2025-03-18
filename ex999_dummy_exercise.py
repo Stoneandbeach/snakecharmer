@@ -3,7 +3,9 @@
 ## id:999|                                                   ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
-import math
+#import math
+#import importlib
+from numpy import ndarray
 
 
 ## ----------------------------CODE------------------------- ##
@@ -26,5 +28,7 @@ def results(lst, n):
     return [i/lst_sum for i in lst]
 
 def solution(lst, n):
+    string = "\n"
+    also_string = '\t\n'
     res = results(lst, n)
     return res

@@ -1,6 +1,9 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import html
 import time
-import random
+import json
+import requests
 from lib import snaketimer
 from lib.solutionhandler import SolutionHandler
 from argparse import ArgumentParser
@@ -20,8 +23,9 @@ n = 100
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
-    parser.add_argument("--dry-run", action="store_true", default=False)
     parser.add_argument("--skip-numpy", action="store_true", default=False)
+    parser.add_argument("--flair", nargs="*")
+    parser.add_argument("--dry-run", action="store_true", default=False)
     parser.add_argument("--plot-estimation", action="store_true", default=False)
     return parser.parse_args()
 
@@ -41,21 +45,39 @@ def main():
     with open(file, "r") as fp:
         script = fp.readlines()
         
-    # Find flair in script file
-    flair = ""
-        
-    # Fetch exercise id and analyse imports to setup evaluation
+    # Parse script to find exercise id, analyse imports and assign flair to setup evaluation
     id = None
+    imported_modules = []
     use_numpy = False
-    for line in script:
+    in_code = False
+    for l, line in enumerate(script):
         if line[:6] == "## id:":
             id = line[6:].split("|")[0]
-        if not args.skip_numpy and "import" in line and "numpy" in line and not line[0] == "#":
-            use_numpy = True
-            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
+        elif "## ----------------------------CODE------------------------- ##" in line:
+            in_code = True
+        elif line[0] != "#" and (parts := line.split()):
+            if parts[0] == "from" or parts[0] == "import":
+                assert not in_code, f"Please put all imports under IMPORTS at the top of the script. Issue on line {l}:\n{line}"
+                assert "," not in line, f"Failed to analyse imports on line {l}. Please only import one module per line. Line in question:\n{line}"
+                module_name = parts[1]
+                print(f"Identified module {module_name} on line {l}.")
+                imported_modules.append(module_name)
+                if not args.skip_numpy and module_name == "numpy":
+                    use_numpy = True
+                    print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
 To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
-    
+        
+    flair = []
+    if args.flair:
+        flair.extend(args.flair)
+    else:
+        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.\n")
+    if imported_modules:
+        flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
+    else:
+        flair.append("no-imports")
+    print(flair)
     
     # Get rough execution time in order to choose number of iterations to average over
     print(f"Estimating average execution time...")
@@ -113,22 +135,35 @@ To prevent this, add '--skip-numpy' when you run this script.")
     # Clean up exercise script and write to local results file
     script = [line for line in script if not (line[:2]=="##" and line[-3:]=="##\n")]
 
-    script = "".join([
-        f"Exercise: {module}\n",
-        f"Execution time: {execution_time:.3f} µs\n",
-        f"Flair: {flair}\n",
-        "Code:\n"
-    ] + script + ["\n\n"])
+    output = {
+        "exercise" : id,
+        "user" : "Sten",
+        "time" : f"{execution_time:.3f} µs",
+        "flair" : flair,
+        "code" : "".join(script)
+    }
 
     if not args.dry_run:
         run_nr = 0
-        result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "result"])])
+        results_file_name = ".".join([module, str(run_nr), "json"])
+        result_file_path = os.sep.join(["results", results_file_name])
         while os.path.exists(result_file_path):
             run_nr += 1
-            result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "result"])])
+            result_file_path = os.sep.join(["results", ".".join([module, str(run_nr), "json"])])
         with open(result_file_path, "w") as fp:
-            fp.write(script)
-        print(f"Wrote to file: {result_file_path}")
+            json.dump(output, fp, indent=2)
+        print(f"Wrote results to file: {result_file_path}")
+        upload = ""
+        while upload not in ["yes", "no"]:
+            upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower()
+        if upload == "yes":
+            r = requests.put("".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name]), headers={'content-type': 'application/json'}, data=output)
+            if r.status_code == requests.codes.ok:
+                print("Results uploaded.")
+            else:
+                r.raise_for_status()
+        
+        print("\nEvaluation complete.")
     
     
 if __name__ == "__main__":

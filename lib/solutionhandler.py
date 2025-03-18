@@ -112,7 +112,7 @@ class SolutionHandler:
         n = 100
         return (lst, n)
     
-    def post_dummy(self):
+    def post_dummy(self, result):
         pass
         
     # Argument getter
