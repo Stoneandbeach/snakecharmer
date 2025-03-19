@@ -86,8 +86,8 @@ def main():
     
     input("Press ENTER to continue...\n")
     print(install_note)
-    proceed = input("Do you want to proceed with the setup? (yes/NO) ")
-    if not proceed.lower() == "yes":
+    proceed = input("Do you want to proceed with the setup? (yes/NO) ").lower().strip()
+    if not proceed== "yes":
         sys.exit("Setup aborted.")
     
     # Make a venv and install requirements
@@ -102,8 +102,8 @@ def main():
     if python_version[1] < 11:
         print(f"Note that performance will be very different if you use a version of Python older than 3.11!")
         print(f"You can continue with this Python version, or abort the setup and relaunch it with a different version.")
-        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)")
-        if proceed.lower() != "yes":
+        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)").lower().strip()
+        if proceed != "yes":
             sys.exit("Setup aborted.")
     
     config_file = os.sep.join(["config", "config.json"])

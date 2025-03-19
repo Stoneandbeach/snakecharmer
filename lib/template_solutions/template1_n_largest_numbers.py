@@ -5,7 +5,11 @@
 ## This is a template used to provide a correct result for   ##
 ## checking exercise submissions. Please don't change this!  ##
 
+import numpy as np
+
 def solution(lst, n):
+    if isinstance(lst, np.ndarray):
+        lst = lst.tolist()
     largest = []
     for i in (range(n)):
         this_largest = 0

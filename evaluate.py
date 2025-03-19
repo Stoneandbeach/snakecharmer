@@ -85,8 +85,8 @@ To prevent this, add '--skip-numpy' when you run this script.")
         print(f"\nYou are using Python version {'.'.join([str(i) for i in python_version])}")
         print(f"Note that performance will be very different if you use a version of Python older than 3.11!")
         print(f"You can continue with this Python version, or abort the evaltuation and relaunch it with a different version.")
-        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)")
-        if proceed.lower() != "yes":
+        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)").lower().strip()
+        if proceed != "yes":
             sys.exit("Aborted.")
     
     print(f"Attaching flair: {flair}")
@@ -191,9 +191,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
         with open(result_file_path, "w") as fp:
             json.dump(output, fp, indent=2)
         print(f"Wrote results to file: {result_file_path}")
-        upload = ""
-        while upload not in ["yes", "no"]:
-            upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower()
+        upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
         if upload == "yes":
             url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
             r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
