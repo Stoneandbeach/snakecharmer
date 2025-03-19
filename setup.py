@@ -60,7 +60,7 @@ Python that is 3.11 or later.
 
 > python3.11 -m venv .venv                 # Replace 3.11 with the version you want to use
 
-Activate the virtual environment:
+Then, activate the virtual environment:
 
 On Linux/MacOS:
 > source .venv/bin/activate
@@ -72,7 +72,7 @@ On Windows:
     using PowerShell:
 > .venv\\Scripts\\Activate.ps1
 
-Then, install the requirements:
+Finally, install the requirements:
 
 > pip install -r requirements.txt
 """
