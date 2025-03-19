@@ -52,7 +52,7 @@ class SolutionHandler:
         if match:
             return True, "".join([C_GREEN, "Results evaluate correctly!", C_END]), message
         else:
-            return False, "".join([C_RED, "Results do not match the excepted!", C_END]), message
+            return False, "".join([C_RED, "Results do not match the expected!", C_END]), message
         
     # 1 - N largest numbers
     def setup_n_largest(self, length=10000, n=50):
@@ -66,11 +66,16 @@ class SolutionHandler:
     def check_n_largest(self, result):
         reference_result = self.get_reference()
         match = True
+        message = ""
         for a, b in zip(result, reference_result):
             if a != b:
                 match = False
                 break
-        return self.conclude(match, reference_result)
+        if len(result) != len(reference_result):
+            match = False
+        if not match:
+            message = f"Your result: {result}\nExpected result: {reference_result}"
+        return self.conclude(match, message)
     
     def post_n_largest(self, results):
         return results
