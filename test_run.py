@@ -49,11 +49,12 @@ To prevent this, add '--skip-numpy' when you run this script.")
     print(f"Sample input: {solution_args}")
     print()
     result = solution(*solution_args)
-    print("Result:")
-    print(solution_handler.post_process(result))
+    
+    if post := solution_handler.post_process(result):
+        print(post)
     
     match, string, reference_results = solution_handler.check(result)
-    print(match)
+    
     print(string)
     print(reference_results)
     

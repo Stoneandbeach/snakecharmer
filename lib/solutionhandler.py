@@ -20,10 +20,10 @@ C_END = '\033[0m'
 class SolutionHandler:
     def __init__(self, id, use_numpy=False, **kwargs):
         setup, self.get_args, self.check, self.post_process = {
-            "1" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_n_largest),
-            "2" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_clamp),
+            "1" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_generic),
+            "2" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_generic),
             "3" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
-            "999" : (self.setup_dummy, self.get_generic, self.post_dummy)
+            "999" : (self.setup_dummy, self.get_generic, self.check_dummy, self.post_dummy)
         }[id]
         self.id = id
         self.use_numpy = use_numpy
@@ -32,6 +32,16 @@ class SolutionHandler:
             False : random.shuffle,
             True : np.random.shuffle
         }[use_numpy]
+    
+    
+    # General methods
+    def get_generic(self):
+        if self.shuffle:
+            self.shuffle_func(self.args[0])
+        return tuple(arg.copy() if hasattr(arg, 'copy') else arg for arg in self.args)
+    
+    def post_generic(self, results):
+        return None
     
     def get_reference(self):
         template = import_template.format(references[self.id])
@@ -54,6 +64,7 @@ class SolutionHandler:
         else:
             return False, "".join([C_RED, "Results do not match the expected!", C_END]), message
         
+        
     # 1 - N largest numbers
     def setup_n_largest(self, length=10000, n=50):
         self.shuffle = True
@@ -66,19 +77,15 @@ class SolutionHandler:
     def check_n_largest(self, result):
         reference_result = self.get_reference()
         match = True
-        message = ""
         for a, b in zip(result, reference_result):
             if a != b:
                 match = False
                 break
         if len(result) != len(reference_result):
             match = False
-        if not match:
-            message = f"Your result: {result}\nExpected result: {reference_result}"
+        message = f"Your result: {result}\nExpected result: {reference_result}"
         return self.conclude(match, message)
-    
-    def post_n_largest(self, results):
-        return results
+            
         
     # 2 - Clamp values
     def setup_clamp(self, size=200):
@@ -96,18 +103,16 @@ class SolutionHandler:
             _matrix = self.args[0]
             return ([row.copy() for row in _matrix],)
         
-    def check_clamp(self, result):
+    def check_clamp(self, results):
         reference_result = self.get_reference()
-        result_sum = sum([sum(row) for row in result])
+        result_sum = sum([sum(row) for row in results])
         reference_sum = sum([sum(row) for row in reference_result])
         match = result_sum == reference_sum
         if match:
             message = ""
         else:
             message = f"The sum of your matrix ({result_sum}) does not match the reference value ({reference_sum}).\n"
-        return self.conclude(match, message + self.post_clamp(result))
-    
-    def post_clamp(self, results):
+        
         contains = False
         if self.use_numpy:
             contains = (results > 255).any() or (results < 0).any()
@@ -132,8 +137,9 @@ class SolutionHandler:
             {True : "still ", False : "not "}[contains],
             C_END
         )
-        return string
-            
+        
+        return self.conclude(match, message + string)
+    
     
     # 3 - Snakespeare
     def setup_snakespeare(self):
@@ -158,7 +164,6 @@ class SolutionHandler:
                     if word not in reference_result[key]:
                         message += f"List of words following word pair {key} is missing word {word}.\n"
         return self.conclude(match, message)
-        
 
     def post_snakespeare(self, word_dict):
         w1, w2 = random.choice([word_pair for word_pair in list(word_dict.keys()) if word_pair[0][0].isupper()])
@@ -180,6 +185,7 @@ class SolutionHandler:
             num_words += 1
         return "\n".join(["Snakespeare writes:", " ".join(words)])
     
+    
     # 999 - Dummy exercise
     def setup_dummy(self):
         self.shuffle = True
@@ -190,23 +196,30 @@ class SolutionHandler:
         n = 100
         return (lst, n)
     
-    def post_dummy(self, result):
+    def check_dummy(self, results):
         pass
-        
-    # Argument getter
-    def get_generic(self):
-        if self.shuffle:
-            self.shuffle_func(self.args[0])
-        return tuple(arg.copy() if hasattr(arg, 'copy') else arg for arg in self.args)
+    
+    def post_dummy(self, results):
+        pass
 
 
 class TestRunHandler(SolutionHandler):
+    # General methods
+    def post_generic(self, results):
+        return f"Your results:\n{results}"
+    
+    
+    # 1 N largest numbers
     def setup_n_largest(self):
         return super().setup_n_largest(length=10, n=3)
     
+    
+    # 2 - Clamp values
     def setup_clamp(self):
         return super().setup_clamp(size=4)
     
+    
+    # 3 - Snakespeare
     def setup_snakespeare(self):
         self.shuffle = False
         sample = 'This text is an example text. This text will hopefully help. For an example is an aid.'

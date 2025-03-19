@@ -138,7 +138,8 @@ To prevent this, add '--skip-numpy' when you run this script.")
     # Post-processing
     print()
     result = solution(*solution_handler.get_args())
-    print(solution_handler.post_process(result))
+    if post := solution_handler.post_process(result):
+        print(post)
     
     # Check correctness of results
     match, string, message = solution_handler.check(result)
