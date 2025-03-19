@@ -1,20 +1,58 @@
 import random
+import sys
 import numpy as np
+
+import_template = """
+from lib.template_solutions.{} import solution as reference_func
+global reference_func
+"""
+
+references = {
+    "1" : "template1_n_largest_numbers",
+    "2" : "template2_clamp_values",
+    "3" : "template3_snakespeare"
+}
+
+C_RED = '\033[91m'
+C_GREEN = '\033[92m'
+C_END = '\033[0m'
 
 class SolutionHandler:
     def __init__(self, id, use_numpy=False, **kwargs):
-        setup, self.get_args, self.post_process = {
-            "1" : (self.setup_n_largest, self.get_generic, self.post_n_largest),
-            "2" : (self.setup_clamp, self.get_clamp, self.post_clamp),
-            "3" : (self.setup_snakespeare, self.get_generic, self.post_snakespeare),
+        setup, self.get_args, self.check, self.post_process = {
+            "1" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_n_largest),
+            "2" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_clamp),
+            "3" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
             "999" : (self.setup_dummy, self.get_generic, self.post_dummy)
         }[id]
+        self.id = id
         self.use_numpy = use_numpy
         self.args = setup(**kwargs)
         self.shuffle_func = {
             False : random.shuffle,
             True : np.random.shuffle
         }[use_numpy]
+    
+    def get_reference(self):
+        template = import_template.format(references[self.id])
+        # Execute import to access reference function
+        try:
+            exec(template)
+        except ImportError as e:
+            sys.exit(f"Could not import reference function. Broken import: '{template}'. Error: {e}")
+        
+        # Temporarily disable shuffling and get reference results
+        _shuffle = self.shuffle
+        self.shuffle = False
+        reference_result = reference_func(*self.get_args())
+        self.shuffle = _shuffle
+        return reference_result
+    
+    def conclude(self, match, message):
+        if match:
+            return True, "".join([C_GREEN, "Results evaluate correctly!", C_END]), message
+        else:
+            return False, "".join([C_RED, "Results do not match the excepted!", C_END]), message
         
     # 1 - N largest numbers
     def setup_n_largest(self, length=10000, n=50):
@@ -24,6 +62,15 @@ class SolutionHandler:
         else:
             lst = list(range(length))
         return (lst, n)
+    
+    def check_n_largest(self, result):
+        reference_result = self.get_reference()
+        match = True
+        for a, b in zip(result, reference_result):
+            if a != b:
+                match = False
+                break
+        return self.conclude(match, reference_result)
     
     def post_n_largest(self, results):
         return results
@@ -43,6 +90,17 @@ class SolutionHandler:
         else:
             _matrix = self.args[0]
             return ([row.copy() for row in _matrix],)
+        
+    def check_clamp(self, result):
+        reference_result = self.get_reference()
+        result_sum = sum([sum(row) for row in result])
+        reference_sum = sum([sum(row) for row in reference_result])
+        match = result_sum == reference_sum
+        if match:
+            message = ""
+        else:
+            message = f"The sum of your matrix ({result_sum}) does not match the reference value ({reference_sum}).\n"
+        return self.conclude(match, message + self.post_clamp(result))
     
     def post_clamp(self, results):
         contains = False
@@ -61,10 +119,9 @@ class SolutionHandler:
                     contains = True
                     break
         if contains:
-            C_TEXT = '\033[91m'
+            C_TEXT = C_RED
         else:
-            C_TEXT = '\033[92m'
-        C_END = '\033[0m'
+            C_TEXT = C_GREEN
         string = "{}Matrix does {}contain numbers < 0 or > 255.{}".format(
             C_TEXT,
             {True : "still ", False : "not "}[contains],
@@ -81,6 +138,22 @@ class SolutionHandler:
         if self.use_numpy:
             sonnets = np.array(sonnets)
         return (sonnets,)
+
+    def check_snakespeare(self, result):
+        reference_result = self.get_reference()
+        match = True
+        message = ""
+        for key in reference_result.keys():
+            if not key in result.keys():
+                match = False
+                message += f"Missing key: word pair {key}\n"
+            elif not len(result[key]) == len(reference_result[key]):
+                match = False
+                for word in result[key]:
+                    if word not in reference_result[key]:
+                        message += f"List of words following word pair {key} is missing word {word}.\n"
+        return self.conclude(match, message)
+        
 
     def post_snakespeare(self, word_dict):
         w1, w2 = random.choice([word_pair for word_pair in list(word_dict.keys()) if word_pair[0][0].isupper()])
@@ -119,7 +192,7 @@ class SolutionHandler:
     def get_generic(self):
         if self.shuffle:
             self.shuffle_func(self.args[0])
-        return self.args
+        return tuple(arg.copy() if hasattr(arg, 'copy') else arg for arg in self.args)
 
 
 class TestRunHandler(SolutionHandler):

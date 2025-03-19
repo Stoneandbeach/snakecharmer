@@ -2,7 +2,7 @@
 ## Exercise id number - don't change this!                   ##
 ## id:3|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-## Snakespeare:
+## Snakespeare:                                              ##
 ## Provide the input for a Markov chain-based text generator.##
 ## Given an input of a string (incidentally containing the   ##
 ## collected sonnets of William Shakespeare), build a        ##

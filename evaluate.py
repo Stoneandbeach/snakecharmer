@@ -140,6 +140,13 @@ To prevent this, add '--skip-numpy' when you run this script.")
     result = solution(*solution_handler.get_args())
     print(solution_handler.post_process(result))
     
+    # Check correctness of results
+    match, string, message = solution_handler.check(result)
+    print(string)
+    print(message)
+    if not match:
+        sys.exit()
+    
     # Clean up exercise script and write to local results file
     script = [line for line in script if not (line[:2]=="##" and line[-3:]=="##\n")]
     first_line = 0
