@@ -1,4 +1,3 @@
-import matplotlib.pyplot as plt
 import numpy as np
 import time
 from datetime import datetime
@@ -72,15 +71,28 @@ To prevent this, add '--skip-numpy' when you run this script.")
     if args.flair:
         flair.extend(args.flair)
     else:
-        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.\n")
+        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.")
     if imported_modules:
         flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
     else:
         flair.append("no-imports")
-    print(flair)
+    
+    # Check Python version. Should be >3.11
+    assert sys.version_info.major == 3, "Please use Python version >= 3.11."
+    python_version = (sys.version_info.major, sys.version_info.minor)
+    flair.append("".join(["python-", '.'.join([str(i) for i in python_version])]))
+    if python_version[1] < 11:
+        print(f"\nYou are using Python version {'.'.join([str(i) for i in python_version])}")
+        print(f"Note that performance will be very different if you use a version of Python older than 3.11!")
+        print(f"You can continue with this Python version, or abort the evaltuation and relaunch it with a different version.")
+        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)")
+        if proceed.lower() != "yes":
+            sys.exit("Aborted.")
+    
+    print(f"Attaching flair: {flair}")
     
     # Get rough execution time in order to choose number of iterations to average over
-    print(f"Estimating average execution time...")
+    print(f"\nEstimating average execution time...")
     average_over_num = 50
     solution_handler = SolutionHandler(id, use_numpy=use_numpy)
     t_estimate = []
@@ -102,13 +114,6 @@ To prevent this, add '--skip-numpy' when you run this script.")
         print(f"Running 100000 iterations.")
     else:
         print(f"Estimated number of iterations needed in order to run for >= {time_to_evaluate} s: {iterations}")
-    
-    if args.plot_estimation:
-        plt.plot([t*1e6 for t in t_estimate], 'x', label="Prel. run")
-        plt.xlabel("Run number")
-        plt.ylabel("Execution time [µs]")
-        plt.legend()
-        plt.show()
     
     # Main timing loop
     start = time.perf_counter()
@@ -146,10 +151,23 @@ To prevent this, add '--skip-numpy' when you run this script.")
     script = script[first_line:]
 
     timestamp = datetime.now().strftime("%H:%M:%S")
+    config_file = os.sep.join(["config", "config.json"])
+    if os.path.exists(config_file):
+        with open(config_file, "r") as fp:
+            config = json.load(fp)
+    else:
+        config = {}    
+    
+    if "user" not in config.keys():
+        print(f"No username found in config file. Did you run 'python setup.py'?")
+        print(f"You shall henceworth be known as 'USER_UNKNOWN'.")
+        user = "USER_UNKNOWN"
+    else:
+        user = config["user"]
 
     output = {
         "exercise" : id,
-        "user" : "Sten",
+        "user" : user,
         "time" : f"{execution_time:.1f} ± {std:.1f} µs",
         "flair" : flair,
         "timestamp" : timestamp,
@@ -170,7 +188,8 @@ To prevent this, add '--skip-numpy' when you run this script.")
         while upload not in ["yes", "no"]:
             upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower()
         if upload == "yes":
-            r = requests.put("".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name]), headers={'content-type': 'application/json'}, data=output)
+            url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
+            r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
             if r.status_code == requests.codes.ok:
                 print("Results uploaded.")
             else:
