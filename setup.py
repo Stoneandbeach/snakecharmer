@@ -55,10 +55,12 @@ Sten
 install_note = """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 To complete installation, please run the following commands. This will install all requi-
-red Python libraries. First, create and activate a virual environment. Be sure to use a
-version of Python that is 3.11 or later.
+red Python libraries. First, create a virual environment. Be sure to use a version of
+Python that is 3.11 or later.
 
-> python3.11 -m venv .venv             # Replace 3.11 with whatever version you might have
+> python3.11 -m venv .venv                 # Replace 3.11 with the version you want to use
+
+Activate the virtual environment:
 
 On Linux/MacOS:
 > source .venv/bin/activate

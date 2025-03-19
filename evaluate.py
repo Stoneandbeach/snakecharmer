@@ -71,15 +71,28 @@ To prevent this, add '--skip-numpy' when you run this script.")
     if args.flair:
         flair.extend(args.flair)
     else:
-        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.\n")
+        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.")
     if imported_modules:
         flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
     else:
         flair.append("no-imports")
-    print(flair)
+    
+    # Check Python version. Should be >3.11
+    assert sys.version_info.major == 3, "Please use Python version >= 3.11."
+    python_version = (sys.version_info.major, sys.version_info.minor)
+    flair.append("".join(["python-", '.'.join([str(i) for i in python_version])]))
+    if python_version[1] < 11:
+        print(f"\nYou are using Python version {'.'.join([str(i) for i in python_version])}")
+        print(f"Note that performance will be very different if you use a version of Python older than 3.11!")
+        print(f"You can continue with this Python version, or abort the evaltuation and relaunch it with a different version.")
+        proceed = input(f"Do you wish to continue using Python {'.'.join([str(i) for i in python_version])}? (yes/NO)")
+        if proceed.lower() != "yes":
+            sys.exit("Aborted.")
+    
+    print(f"Attaching flair: {flair}")
     
     # Get rough execution time in order to choose number of iterations to average over
-    print(f"Estimating average execution time...")
+    print(f"\nEstimating average execution time...")
     average_over_num = 50
     solution_handler = SolutionHandler(id, use_numpy=use_numpy)
     t_estimate = []
@@ -138,8 +151,12 @@ To prevent this, add '--skip-numpy' when you run this script.")
     script = script[first_line:]
 
     timestamp = datetime.now().strftime("%H:%M:%S")
-    with open(os.sep.join(["config", "config.json"]), "r") as fp:
-        config = json.load(fp)
+    config_file = os.sep.join(["config", "config.json"])
+    if os.path.exists(config_file):
+        with open(config_file, "r") as fp:
+            config = json.load(fp)
+    else:
+        config = {}    
     
     if "user" not in config.keys():
         print(f"No username found in config file. Did you run 'python setup.py'?")
