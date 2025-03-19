@@ -1,7 +1,3 @@
-import matplotlib.pyplot as plt
-import time
-import random
-from lib import snaketimer
 from lib.solutionhandler import TestRunHandler
 from argparse import ArgumentParser
 import os, sys
