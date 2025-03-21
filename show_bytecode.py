@@ -12,7 +12,7 @@ def parse_args():
 
 def main():
     args = parse_args()
-    file = args.file.replace(".py", "")
+    file = args.file.replace(".py", "").replace("/", ".")
     exec(template.format(file=file))
     for key in dir(module):
         item = getattr(module, key)
