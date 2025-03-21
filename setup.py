@@ -45,6 +45,11 @@ the merrier! Try to make your solutions as fast as possible, or challenge yourse
 stricting what you can use in order to test the many different tools that are available -
 the choice is up to you!
 
+Finally, you can inspect the bytecode of a script to find possible ways of improving per-
+formance. Do this by running
+
+> python show_bytecode.py SCRIPT_NAME.py
+
 If you have any questions, please ask the guy at the front of the room!
 
 Cheers and happy timing,

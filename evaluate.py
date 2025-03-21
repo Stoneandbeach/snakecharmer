@@ -26,7 +26,6 @@ def parse_args():
     parser.add_argument("--skip-numpy", action="store_true", default=False)
     parser.add_argument("--flair", nargs="*")
     parser.add_argument("--dry-run", action="store_true", default=False)
-    parser.add_argument("--plot-estimation", action="store_true", default=False)
     return parser.parse_args()
 
 def main():
