@@ -8,7 +8,6 @@ from collections import defaultdict
 import numpy as np
 
 def solution(initial_state, E_split, E_mass, stop_threshold):
-    print(initial_state, type(initial_state), initial_state.size, type(initial_state[0]))
     if isinstance(initial_state, np.ndarray):
         initial_state = initial_state.tolist()
     
