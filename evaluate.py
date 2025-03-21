@@ -197,7 +197,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
             r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
             if r.status_code == requests.codes.ok:
-                print("Results uploaded.")
+                print("Results uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
             else:
                 r.raise_for_status()
         
