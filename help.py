@@ -1,3 +1,5 @@
+import os
+
 help_note = """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -16,7 +18,9 @@ You can always rerun the evaluation if you make further improvements.
 Add custom flair:
 
 > python evaluate.py exN_NAME.py --flair MY_FLAIR MY_OTHER_FLAIR
+"""
 
+venv_note = """
 Activate the virtual environment (necessary if you restart the terminal):
 
 On Linux/MacOS:
@@ -38,8 +42,19 @@ Then, you can install required libraries:
 > pip install scipy
 """
 
+swan_note = """
+To see what Python libraries are available, use:
+
+> pip list
+"""
+
 def main():
     print(help_note)
+    print()
+    if os.getenv("SWAN_LIB_DIR"):
+        print(swan_note)
+    else:
+        print(venv_note)
 
 if __name__ == "__main__":
     main()

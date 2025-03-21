@@ -192,12 +192,12 @@ To prevent this, add '--skip-numpy' when you run this script.")
         with open(result_file_path, "w") as fp:
             json.dump(output, fp, indent=2)
         print(f"Wrote results to file: {result_file_path}")
-        upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
+        upload = input("\nWould you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
         if upload == "yes":
             url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
             r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
-            if r.status_code == requests.codes.ok:
-                print("Results uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
+            if r.status_code in [requests.codes.ok, requests.codes.created]:
+                print("\nResults uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
             else:
                 r.raise_for_status()
         
