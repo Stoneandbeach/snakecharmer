@@ -127,7 +127,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             )
         )
     end = time.perf_counter()
-    print(f"Total evaluation time: {end - start:.1f} s")
+    print(f"\nTotal evaluation time: {end - start:.1f} s")
     
     print(f"Total time in work function: {sum(t):.1f} s")
     t = np.array(t)
