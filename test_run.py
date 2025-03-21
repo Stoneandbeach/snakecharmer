@@ -53,10 +53,10 @@ To prevent this, add '--skip-numpy' when you run this script.")
     if post := solution_handler.post_process(result):
         print(post)
     
-    match, string, reference_results = solution_handler.check(result)
+    match, string, message = solution_handler.check(result)
     
     print(string)
-    print(reference_results)
+    print(message)
     
     
      

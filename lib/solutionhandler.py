@@ -10,7 +10,9 @@ global reference_func
 references = {
     "1" : "template1_n_largest_numbers",
     "2" : "template2_clamp_values",
-    "3" : "template3_snakespeare"
+    "3" : "template3_snakespeare",
+    "4" : "template4_normalization",
+    "5" : "template5_bothon"
 }
 
 C_RED = '\033[91m'
@@ -23,6 +25,8 @@ class SolutionHandler:
             "1" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_generic),
             "2" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_generic),
             "3" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
+            "4" : (self.setup_normalization, self.get_generic, self.check_normalization, self.post_generic),
+            "5" : (self.setup_bothon, self.get_generic, self.check_bothon, self.post_generic),
             "999" : (self.setup_dummy, self.get_generic, self.check_dummy, self.post_dummy)
         }[id]
         self.id = id
@@ -186,6 +190,44 @@ class SolutionHandler:
         return "\n".join(["Snakespeare writes:", " ".join(words)])
     
     
+    # 4 - Normalization
+    def setup_normalization(self, length=10000):
+        self.shuffle = True
+        if self.use_numpy:
+            lst = np.arange(length)
+        else:
+            lst = list(range(length))
+        return(lst,)
+
+    def check_normalization(self, result):
+        reference_result = self.get_reference()
+        match = True
+        for a, b in zip(result, reference_result):
+            if a != b:
+                match = False
+                break
+        if len(result) != len(reference_result):
+            match = False
+            
+        message = f"Sum of your result: {sum(result)}\nExpected sum: {sum(reference_result)}"
+        return self.conclude(match, message)
+    
+    
+    # 5 - Bothon
+    def setup_bothon(self, E_split=12, E_mass=3, stop_threshold=60):
+        self.shuffle = False
+        if self.use_numpy:
+            initial_state = np.array([8])
+        else:
+            initial_state = [8]
+        return (initial_state, E_split, E_mass, stop_threshold)
+    
+    def check_bothon(self, result):
+        reference_result = self.get_reference()
+        match = result == reference_result
+        message = f"Number of bothons; your result: {result}\nExpected result: {reference_result}"
+        return self.conclude(match, message)
+    
     # 999 - Dummy exercise
     def setup_dummy(self):
         self.shuffle = True
@@ -234,3 +276,13 @@ class TestRunHandler(SolutionHandler):
             print(key, word_dict[key])
         print()
         return super().post_snakespeare(word_dict)
+    
+    
+    # 4 - Normalization
+    def setup_normalization(self):
+        return super().setup_normalization(length=10)
+    
+    
+    # 5 - Bothon
+    def setup_bothon(self):
+        return super().setup_bothon(stop_threshold = 10)

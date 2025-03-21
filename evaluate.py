@@ -6,6 +6,7 @@ import requests
 from lib import snaketimer
 from lib.solutionhandler import SolutionHandler
 from argparse import ArgumentParser
+from tqdm import tqdm
 import os, sys
 sys.path.append(os.getcwd())
 
@@ -96,7 +97,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
     average_over_num = 50
     solution_handler = SolutionHandler(id, use_numpy=use_numpy)
     t_estimate = []
-    for i in range(average_over_num):
+    for i in tqdm(range(average_over_num)):
         sol_args = solution_handler.get_args()
         t_estimate.append(
             snaketimer.timeit(
@@ -118,7 +119,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
     # Main timing loop
     start = time.perf_counter()
     t = []
-    for i in range(iterations):
+    for _ in tqdm(range(iterations)):
         t.append(
             snaketimer.timeit(
                 stmt=solution,
