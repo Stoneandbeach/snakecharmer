@@ -21,6 +21,8 @@ Inspect the bytecode of a script:
 """
 
 venv_note = """
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Activate the virtual environment (necessary if you restart the terminal):
 
 On Linux/MacOS:
@@ -45,13 +47,53 @@ To see what Python libraries are available, use:
 > pip list
 """
 
+swan_tips_and_tricks = """
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Some tips and tricks~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+External libraries available on SWAN:
+NumPy, Pandas, Scipy… check ‘pip list’ for complete list
+
+Python standard library modules:
+https://docs.python.org/3/library/index.html
+collections - useful for managing sets of things
+math - useful for… math
+itertools - provides tools for iterators
+
+Built-in functions and other usefuls:
+https://docs.python.org/3/library/functions.html
+sum(), len(), max(), [list comprehension], {dictionaries}...
+"""
+
+tips_and_tricks = """
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Some tips and tricks~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+External libraries:
+NumPy, Pandas, Scipy…
+
+Python standard library modules:
+https://docs.python.org/3/library/index.html
+collections - useful for managing sets of things
+math - useful for… math
+itertools - provides tools for iterators
+
+Built-in functions and other usefuls:
+https://docs.python.org/3/library/functions.html
+sum(), len(), max(), [list comprehension], {dictionaries}...
+"""
+
 def main():
     print(help_note)
-    print()
+    input("\nPress ENTER to continue...")
     if os.getenv("SWAN_LIB_DIR"):
-        print(swan_note)
+        print(swan_tips_and_tricks)
     else:
         print(venv_note)
+        input("\nPress ENTER to continue...")
+        print(tips_and_tricks)
+        
+    
+    
+
 
 if __name__ == "__main__":
     main()
