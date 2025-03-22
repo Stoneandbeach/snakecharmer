@@ -7,6 +7,9 @@ This repo is built around a set of exercises on the topic of optimizing Python c
 ### Installation
 
 Simply clone the git repo (or download as a zip file) and run `python setup.py` to get further instructions. You may be asked to set up a virtual environment, into which a few external, required libraries need to be installed.
+`git clone https://github.com/Stoneandbeach/snakecharmer.git`
+`cd snakecharmer`
+`python setup.py`
 
 Note that using Python 3.11 is recommended. This version of Python came with a large change to how Python code is interpreted and run, so using an older version will not yield the same timing results (though should very likely work, so there's no harm). Using a newer version than 3.11 should be fine, remembering that at some point, there will be new updates to Python. In essence, results are only truly comparable while using the same Python version.
 
