@@ -199,6 +199,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             if r.status_code in [requests.codes.ok, requests.codes.created]:
                 print("\nResults uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
             else:
+                print("Upload failed! The results board may no longer be available.")
                 r.raise_for_status()
         
         print("\nEvaluation complete.")
