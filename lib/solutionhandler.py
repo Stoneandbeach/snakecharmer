@@ -1,5 +1,6 @@
 import random
 import sys
+import os
 import numpy as np
 
 import_template = """
@@ -12,7 +13,8 @@ references = {
     "2" : "template2_clamp_values",
     "3" : "template3_snakespeare",
     "4" : "template4_normalization",
-    "5" : "template5_bothon"
+    "5" : "template5_bothon",
+    "6" : "template6_find_mass"
 }
 
 C_RED = '\033[91m'
@@ -27,6 +29,7 @@ class SolutionHandler:
             "3" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
             "4" : (self.setup_normalization, self.get_generic, self.check_normalization, self.post_generic),
             "5" : (self.setup_bothon, self.get_generic, self.check_bothon, self.post_generic),
+            "6" : (self.setup_mass, self.get_generic, self.check_mass, self.post_generic),
             "999" : (self.setup_dummy, self.get_generic, self.check_dummy, self.post_dummy)
         }[id]
         self.id = id
@@ -36,6 +39,9 @@ class SolutionHandler:
             False : random.shuffle,
             True : np.random.shuffle
         }[use_numpy]
+        if use_numpy:
+            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
+To prevent this, add '--skip-numpy' when you run this script.")
     
     
     # General methods
@@ -228,6 +234,19 @@ class SolutionHandler:
         message = f"Number of bothons; your result: {result}\nExpected result: {reference_result}"
         return self.conclude(match, message)
     
+    
+    #6 - Find mass
+    def setup_mass(self):
+        self.shuffle = False
+        return (os.sep.join(["data", "collision_data.csv"]),)
+    
+    def check_mass(self, result):
+        reference_result = self.get_reference()
+        match = result[0] == reference_result[0] and result[1] == reference_result[1]
+        message = f"your results; mass: {result[0]}, standard deviation: {result[1]}\nExpected result; mass: {reference_result[0]}, standard deviation: {reference_result[1]}"
+        return self.conclude(match, message)
+    
+    
     # 999 - Dummy exercise
     def setup_dummy(self):
         self.shuffle = True
@@ -286,3 +305,9 @@ class TestRunHandler(SolutionHandler):
     # 5 - Bothon
     def setup_bothon(self):
         return super().setup_bothon(stop_threshold = 10)
+    
+    
+    # 6 - Find mass
+    def setup_bothon(self):
+        self.shuffle = False
+        return (os.sep.join(["data", "collision_data_test.csv"]),)

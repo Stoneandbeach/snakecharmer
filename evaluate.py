@@ -63,8 +63,6 @@ def main():
                 imported_modules.append(module_name)
                 if not args.skip_numpy and module_name == "numpy":
                     use_numpy = True
-                    print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
-To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
         
     flair = []
