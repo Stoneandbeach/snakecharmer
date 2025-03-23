@@ -20,6 +20,18 @@ length = 10000
 lst = list(range(length))
 n = 100
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
@@ -69,7 +81,7 @@ def main():
     if args.flair:
         flair.extend(args.flair)
     else:
-        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.")
+        print(f"\n{bcolors.WARNING}Note: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.{bcolors.ENDC}")
     if imported_modules:
         flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
     else:
@@ -135,9 +147,10 @@ def main():
     
     # Post-processing
     print()
-    result = solution(*solution_handler.get_args())
+    result = solution(*solution_handler.get_args(check=True))
     if post := solution_handler.post_process(result):
         print(post)
+        print()
     
     # Check correctness of results
     match, string, message = solution_handler.check(result)

@@ -14,12 +14,21 @@ references = {
     "3" : "template3_snakespeare",
     "4" : "template4_normalization",
     "5" : "template5_bothon",
-    "6" : "template6_find_mass"
+    "6" : "template6_find_mass",
+    "7" : "template7_count_instances"
 }
 
-C_RED = '\033[91m'
-C_GREEN = '\033[92m'
-C_END = '\033[0m'
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 class SolutionHandler:
     def __init__(self, id, use_numpy=False, **kwargs):
@@ -30,6 +39,7 @@ class SolutionHandler:
             "4" : (self.setup_normalization, self.get_generic, self.check_normalization, self.post_generic),
             "5" : (self.setup_bothon, self.get_generic, self.check_bothon, self.post_generic),
             "6" : (self.setup_mass, self.get_generic, self.check_mass, self.post_generic),
+            "7" : (self.setup_count, self.get_count, self.check_count, self.post_generic),
             "999" : (self.setup_dummy, self.get_generic, self.check_dummy, self.post_dummy)
         }[id]
         self.id = id
@@ -40,12 +50,12 @@ class SolutionHandler:
             True : np.random.shuffle
         }[use_numpy]
         if use_numpy:
-            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
-To prevent this, add '--skip-numpy' when you run this script.")
+            print(f"{bcolors.WARNING}Found numpy import. Assuming you want the input data as a numpy.ndarray. \
+To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
     
     
     # General methods
-    def get_generic(self):
+    def get_generic(self, **kwargs):
         if self.shuffle:
             self.shuffle_func(self.args[0])
         return tuple(arg.copy() if hasattr(arg, 'copy') else arg for arg in self.args)
@@ -70,9 +80,9 @@ To prevent this, add '--skip-numpy' when you run this script.")
     
     def conclude(self, match, message):
         if match:
-            return True, "".join([C_GREEN, "Results evaluate correctly!", C_END]), message
+            return True, "".join([bcolors.OKGREEN, "Results evaluate correctly!", bcolors.ENDC]), message
         else:
-            return False, "".join([C_RED, "Results do not match the expected!", C_END]), message
+            return False, "".join([bcolors.FAIL, "Results do not match the expected!", bcolors.ENDC]), message
         
         
     # 1 - N largest numbers
@@ -106,7 +116,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             matrix = [[random.randint(-200, 500) for _ in range(size)] for _ in range(size)]
         return (matrix,)
     
-    def get_clamp(self):
+    def get_clamp(self, **kwargs):
         if self.use_numpy:
             return (self.args[0].copy(),)
         else:
@@ -139,13 +149,13 @@ To prevent this, add '--skip-numpy' when you run this script.")
                     contains = True
                     break
         if contains:
-            C_TEXT = C_RED
+            C_TEXT = bcolors.FAIL
         else:
-            C_TEXT = C_GREEN
+            C_TEXT = bcolors.OKGREEN
         string = "{}Matrix does {}contain numbers < 0 or > 255.{}".format(
             C_TEXT,
             {True : "still ", False : "not "}[contains],
-            C_END
+            bcolors.ENDC
         )
         
         return self.conclude(match, message + string)
@@ -247,6 +257,26 @@ To prevent this, add '--skip-numpy' when you run this script.")
         return self.conclude(match, message)
     
     
+    #7 - Count instances
+    def setup_count(self, length=100000, number=1):
+        self.shuffle = False
+        self.arg_count = 0
+        lists = [[random.randint(-5, 5) for _ in range(length)] for _ in range(5)]
+        return (lists, number)
+    
+    def get_count(self, check=False, **kwargs):
+        lst = self.args[0][self.arg_count]
+        if not check:
+            self.arg_count = (self.arg_count + 1) % len(self.args[0])
+        return (lst, self.args[1])
+    
+    def check_count(self, result):
+        reference_result = self.get_reference()
+        match = result == reference_result
+        message = f"your results: {result} counts\nExpected result: {reference_result} counts"
+        return self.conclude(match, message)
+    
+    
     # 999 - Dummy exercise
     def setup_dummy(self):
         self.shuffle = True
@@ -311,3 +341,11 @@ class TestRunHandler(SolutionHandler):
     def setup_bothon(self):
         self.shuffle = False
         return (os.sep.join(["data", "collision_data_test.csv"]),)
+    
+    
+    #7 - Count instances
+    def setup_count(self, length=100, number=1):
+        return super().setup_count(length, number)
+    
+    def get_count(self):
+        return (self.args[0][0], self.args[1])

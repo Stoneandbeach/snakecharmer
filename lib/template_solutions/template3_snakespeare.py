@@ -4,7 +4,6 @@
 ## ------------------------DESCRIPTION---------------------- ##
 ## This is a template used to provide a correct result for   ##
 ## checking exercise submissions. Please don't change this!  ##
-
 import numpy as np
 
 def solution(sonnets):
