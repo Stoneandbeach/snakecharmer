@@ -268,6 +268,8 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         lst = self.args[0][self.arg_count]
         if not check:
             self.arg_count = (self.arg_count + 1) % len(self.args[0])
+        if self.use_numpy:
+            lst = np.array(lst)
         return (lst, self.args[1])
     
     def check_count(self, result):

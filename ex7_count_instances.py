@@ -2,8 +2,8 @@
 ## Exercise id number - don't change this!                   ##
 ## id:7|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-## Count the number of times a given number appears in a list##
-## of integers and return the result.                        ##
+## Count the number of times a given number appears in a     ##
+## list of integers and return the result.                   ##
 ##                                                           ##
 ## Inputs:                                                   ##
 ## lst: list                                                 ##
@@ -39,6 +39,3 @@ def solution(lst, number):
         if element == number:
             count += 1
     return count
-
-def solution(lst, number):
-    return lst.count(number)
