@@ -44,9 +44,11 @@ def main():
     solution_args = solution_handler.get_args()
     print(f"Testing exercise {id}.")
     print()
-    print("Printed output from your script (if any):")
+    print("~~~ Printed output from your script (if any): ~~~")
+    print()
     result = solution(*solution_args)
     print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     print(f"Sample input: {solution_args}")
     print()
     

@@ -1,18 +1,18 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:1|                                                     ##
+## id:3|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-## n_largest_numbers:                                        ##
-## Given an input list 'lst' and integer 'n', find the n     ##
-## largest numbers in lst. Return a list with the those      ##
-## number sorted from largest to smallest.                   ##
+## clamp_values:                                             ##
+## Given a matrix of integer values, constrain the range of  ##
+## those values to [0, 255] inclusive. Any number originally ##
+## in that range is to remain unchanged, while a number < 0  ##
+## should be set to 0 and a number > 255 to 255.             ##
 ##                                                           ##
 ## Inputs:                                                   ##
-## lst: list                                                 ##
-## n: int                                                    ##
+## matrix: list(n * list(m * int))                           ##
 ##                                                           ##
-## Returns:                                                  ##
-## largest: iterable, length n                               ##
+## ## Returns:                                               ##
+## matrix: iterable(n * iterable(m * int))                   ##
 ##                                                           ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
@@ -34,16 +34,11 @@
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
 
-def solution(lst, n):
-    largest = []
-    for i in (range(n)):
-        this_largest = 0
-        largest_index = 0
-        for n, num in enumerate(lst):
-            if num > this_largest:
-                this_largest = num
-                largest_index = n
-        largest.append(this_largest)
-        lst.pop(largest_index)
-    return largest
-                
+def solution(matrix: list):
+    for i in range(len(matrix)):
+        for j in range(len(matrix[i])):
+            if matrix[i][j] < 0:
+                matrix[i][j] = 0
+            elif matrix[i][j] > 255:
+                matrix[i][j] = 255
+    return matrix

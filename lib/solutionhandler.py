@@ -9,13 +9,13 @@ global reference_func
 """
 
 references = {
-    "1" : "template1_n_largest_numbers",
-    "2" : "template2_clamp_values",
-    "3" : "template3_snakespeare",
-    "4" : "template4_normalization",
-    "5" : "template5_bothon",
-    "6" : "template6_find_mass",
-    "7" : "template7_count_instances"
+    "4" : "template4_n_largest_numbers",
+    "3" : "template3_clamp_values",
+    "7" : "template7_snakespeare",
+    "2" : "template2_normalization",
+    "6" : "template6_bothon",
+    "5" : "template5_find_mass",
+    "1" : "template1_count_instances"
 }
 
 class bcolors:
@@ -33,13 +33,13 @@ class bcolors:
 class SolutionHandler:
     def __init__(self, id, use_numpy=False, **kwargs):
         setup, self.get_args, self.check, self.post_process = {
-            "1" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_generic),
-            "2" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_generic),
-            "3" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
-            "4" : (self.setup_normalization, self.get_generic, self.check_normalization, self.post_generic),
-            "5" : (self.setup_bothon, self.get_generic, self.check_bothon, self.post_generic),
-            "6" : (self.setup_mass, self.get_generic, self.check_mass, self.post_generic),
-            "7" : (self.setup_count, self.get_count, self.check_count, self.post_generic),
+            "4" : (self.setup_n_largest, self.get_generic, self.check_n_largest, self.post_generic),
+            "3" : (self.setup_clamp, self.get_clamp, self.check_clamp, self.post_generic),
+            "7" : (self.setup_snakespeare, self.get_generic, self.check_snakespeare, self.post_snakespeare),
+            "2" : (self.setup_normalization, self.get_generic, self.check_normalization, self.post_generic),
+            "6" : (self.setup_bothon, self.get_generic, self.check_bothon, self.post_generic),
+            "5" : (self.setup_mass, self.get_generic, self.check_mass, self.post_generic),
+            "1" : (self.setup_count, self.get_count, self.check_count, self.post_generic),
             "999" : (self.setup_dummy, self.get_generic, self.check_dummy, self.post_dummy)
         }[id]
         self.id = id
@@ -87,7 +87,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
             return False, "".join([bcolors.FAIL, "Results do not match the expected!", bcolors.ENDC]), message
         
         
-    # 1 - N largest numbers
+    # 4 - N largest numbers
     def setup_n_largest(self, length=10000, n=50):
         self.shuffle = True
         if self.use_numpy:
@@ -109,7 +109,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return self.conclude(match, message)
             
         
-    # 2 - Clamp values
+    # 3 - Clamp values
     def setup_clamp(self, size=200):
         self.shuffle = False
         if self.use_numpy:
@@ -163,7 +163,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return self.conclude(match, message + string)
     
     
-    # 3 - Snakespeare
+    # 7 - Snakespeare
     def setup_snakespeare(self):
         self.shuffle = False
         with open("./data/sonnets.txt", "r") as fp:
@@ -208,7 +208,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return "\n".join(["Snakespeare writes:", " ".join(words)])
     
     
-    # 4 - Normalization
+    # 2 - Normalization
     def setup_normalization(self, length=10000):
         self.shuffle = True
         if self.use_numpy:
@@ -231,7 +231,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return self.conclude(match, message)
     
     
-    # 5 - Bothon
+    # 6 - Bothon
     def setup_bothon(self, E_split=12, E_mass=3, stop_threshold=60):
         self.shuffle = False
         if self.use_numpy:
@@ -247,7 +247,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return self.conclude(match, message)
     
     
-    #6 - Find mass
+    #5 - Find mass
     def setup_mass(self):
         self.shuffle = False
         self.use_numpy = False
@@ -260,7 +260,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
         return self.conclude(match, message)
     
     
-    #7 - Count instances
+    #1 - Count instances
     def setup_count(self, length=100000, number=1):
         self.shuffle = False
         self.arg_count = 0
@@ -305,17 +305,17 @@ class TestRunHandler(SolutionHandler):
         return f"Your results:\n{results}"
     
     
-    # 1 N largest numbers
+    # 4 N largest numbers
     def setup_n_largest(self):
         return super().setup_n_largest(length=10, n=3)
     
     
-    # 2 - Clamp values
+    # 3 - Clamp values
     def setup_clamp(self):
         return super().setup_clamp(size=4)
     
     
-    # 3 - Snakespeare
+    # 7 - Snakespeare
     def setup_snakespeare(self):
         self.shuffle = False
         sample = 'This text is an example text. This text will hopefully help. For an example is an aid.'
@@ -332,23 +332,23 @@ class TestRunHandler(SolutionHandler):
         return super().post_snakespeare(word_dict)
     
     
-    # 4 - Normalization
+    # 2 - Normalization
     def setup_normalization(self):
         return super().setup_normalization(length=10)
     
     
-    # 5 - Bothon
+    # 6 - Bothon
     def setup_bothon(self):
         return super().setup_bothon(stop_threshold = 10)
     
     
-    # 6 - Find mass
-    def setup_bothon(self):
+    # 5 - Find mass
+    def setup_mass(self):
         self.shuffle = False
         return (os.sep.join(["data", "collision_data_test.csv"]),)
     
     
-    #7 - Count instances
+    # 1 - Count instances
     def setup_count(self, length=100, number=1):
         return super().setup_count(length, number)
     

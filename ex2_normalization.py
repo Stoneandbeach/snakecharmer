@@ -1,6 +1,6 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:4|                                                     ##
+## id:2|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
 ## normalization:                                            ##
 ## Given an input list 'lst' of numbers, normalize all the   ##

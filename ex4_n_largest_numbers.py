@@ -1,16 +1,18 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:7|                                                     ##
+## id:4|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-## Count the number of times a given number appears in a     ##
-## list of integers and return the result.                   ##
+## n_largest_numbers:                                        ##
+## Given an input list 'lst' and integer 'n', find the n     ##
+## largest numbers in lst. Return a list with the those      ##
+## number sorted from largest to smallest.                   ##
 ##                                                           ##
 ## Inputs:                                                   ##
 ## lst: list                                                 ##
-## number: int                                               ##
+## n: int                                                    ##
 ##                                                           ##
 ## Returns:                                                  ##
-## count: int                                                ##
+## largest: iterable, length n                               ##
 ##                                                           ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
@@ -32,10 +34,16 @@
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
 
-
-def solution(lst, number):
-    count = 0
-    for element in lst:
-        if element == number:
-            count += 1
-    return count
+def solution(lst, n):
+    largest = []
+    for i in (range(n)):
+        this_largest = 0
+        largest_index = 0
+        for n, num in enumerate(lst):
+            if num > this_largest:
+                this_largest = num
+                largest_index = n
+        largest.append(this_largest)
+        lst.pop(largest_index)
+    return largest
+                

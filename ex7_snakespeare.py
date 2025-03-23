@@ -1,6 +1,6 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:3|                                                     ##
+## id:7|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
 ## Snakespeare:                                              ##
 ## Provide the input for a Markov chain-based text generator.##
@@ -68,6 +68,8 @@
 ##       lst = sorted(lst)   <--- also yes                   ##
 
 def solution(sonnets):
+    # Note! This is definitely not the most reasonable algorithm to use!
+    
     # Setup dictionary
     word_dict = dict()
     

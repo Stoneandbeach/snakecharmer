@@ -1,6 +1,6 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:5|                                                     ##
+## id:6|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
 ## You believe that a new particle, called a bothon, is      ##
 ## being created at the LHC! If so, that could explain the   ##
