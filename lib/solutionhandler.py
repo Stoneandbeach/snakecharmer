@@ -49,7 +49,9 @@ class SolutionHandler:
             False : random.shuffle,
             True : np.random.shuffle
         }[use_numpy]
-        if use_numpy:
+        
+        # If the setup function has allowed self.use_numpy, notify the user
+        if self.use_numpy:
             print(f"{bcolors.WARNING}Found numpy import. Assuming you want the input data as a numpy.ndarray. \
 To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
     
@@ -248,6 +250,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
     #6 - Find mass
     def setup_mass(self):
         self.shuffle = False
+        self.use_numpy = False
         return (os.sep.join(["data", "collision_data.csv"]),)
     
     def check_mass(self, result):
