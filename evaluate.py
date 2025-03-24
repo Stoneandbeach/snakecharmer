@@ -87,6 +87,13 @@ def main():
         flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
     else:
         flair.append("no-imports")
+    builtins = False
+    for item in solution.__code__.co_names:
+        print(item, item in dir(__builtins__))
+        if item in dir(__builtins__):
+            builtins = True
+    if not builtins:
+        flair.append("no-built-ins")
     
     # Check Python version. Should be >3.11
     assert sys.version_info.major == 3, "Please use Python version >= 3.11."
