@@ -7,6 +7,7 @@ from lib import snaketimer
 from lib.solutionhandler import SolutionHandler
 from argparse import ArgumentParser
 from tqdm import tqdm
+import subprocess
 import os, sys
 sys.path.append(os.getcwd())
 
@@ -205,13 +206,19 @@ def main():
         print(f"Wrote results to file: {result_file_path}")
         upload = input("\nWould you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
         if upload == "yes":
-            url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
-            r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
-            if r.status_code in [requests.codes.ok, requests.codes.created]:
-                print("\nResults uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
+            if os.getenv("SWAN_LIB_DIR"):
+                r = subprocess.run(['./uploader', result_file_path])
+                print(f"Response from upload call: {r}")
+                print(f"See results at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
             else:
-                print("Upload failed! The results board may no longer be available.")
-                r.raise_for_status()
+                print("\nNot running on SWAN - results cannot be validated.")
+                url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
+                r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
+                if r.status_code in [requests.codes.ok, requests.codes.created]:
+                    print("Results uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
+                else:
+                    print("Upload failed! The results board may no longer be available.")
+                    r.raise_for_status()
         
         print("\nEvaluation complete.")
     
