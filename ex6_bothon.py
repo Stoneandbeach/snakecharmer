@@ -65,9 +65,12 @@ def step(bothons, E_split, E_mass):
     new_bothons = []
     for bothon in bothons:
         if bothon > E_split:
+            # Bothon is above splitting energy. Split it into
+            # two new bothons and store their energies.
             new_energy = (bothon - 2 * E_mass) / 2
             new_bothons.extend([new_energy, new_energy])
         else:
+            # Double bothon energy
             new_bothons.append(bothon * 2)
     return new_bothons
 

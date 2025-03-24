@@ -28,7 +28,6 @@
 ## Imports - put any imports you use here                    ##
 import math
 import csv
-import numpy as np
 
 
 ## ----------------------------CODE------------------------- ##
@@ -50,6 +49,7 @@ import numpy as np
 def solution(file):
     data_table = []
     with open(file, "r") as fp:
+        # Read in data from csv row by row
         reader = csv.reader(fp)
         for row in reader:
             data_table.append(row)
@@ -58,6 +58,7 @@ def solution(file):
     masses = []
     for row in data_table[1:]:
         if row[1] == "signal":
+            # The current row is classified as 'signal'
             masses.append(float(row[5]))
             
     mass_mean = sum(masses) / len(masses)
