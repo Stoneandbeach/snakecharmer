@@ -38,24 +38,27 @@ def main():
             id = line[6:].split("|")[0]
         if not args.skip_numpy and "import" in line and "numpy" in line and not line[0] == "#":
             use_numpy = True
-            print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
-To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
     
     solution_handler = TestRunHandler(id, use_numpy=use_numpy)
     solution_args = solution_handler.get_args()
     print(f"Testing exercise {id}.")
     print()
-    print(f"Sample input: {solution_args}")
+    print("~~~ Printed output from your script (if any): ~~~")
     print()
     result = solution(*solution_args)
-    print("Result:")
-    print(solution_handler.post_process(result))
+    print()
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    print(f"Sample input: {solution_args}")
+    print()
     
-    match, string, reference_results = solution_handler.check(result)
-    print(match)
+    if post := solution_handler.post_process(result):
+        print(post)
+    
+    match, string, message = solution_handler.check(result)
+    
     print(string)
-    print(reference_results)
+    print(message)
     
     
      

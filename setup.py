@@ -1,6 +1,5 @@
 import sys
 import os
-import subprocess
 import json
 
 welcome = """
@@ -46,6 +45,11 @@ the merrier! Try to make your solutions as fast as possible, or challenge yourse
 stricting what you can use in order to test the many different tools that are available -
 the choice is up to you!
 
+Finally, you can inspect the bytecode of a script to find possible ways of improving per-
+formance. Do this by running
+
+> python show_bytecode.py SCRIPT_NAME.py
+
 If you have any questions, please ask the guy at the front of the room!
 
 Cheers and happy timing,
@@ -54,6 +58,7 @@ Sten
 
 install_note = """
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 To complete installation, please run the following commands. This will install all requi-
 red Python libraries. First, create a virual environment. Be sure to use a version of
 Python that is 3.11 or later.
@@ -77,6 +82,17 @@ Finally, install the requirements:
 > pip install -r requirements.txt
 """
 
+install_note_swan = """
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The SWAN system comes complete with Python 3.11 and NumPy installed, as well as a few
+other libraries that you might want to use. For this exercise, if a library that you want
+is not available, consider it a creative challenge!
+
+You will now be asked to enter a username for uploading your results. You can change this
+later by editing the config/config.json file.
+"""
+
 def main():
     # Welcome
     print(welcome)
@@ -85,16 +101,10 @@ def main():
     print(competition)
     
     input("Press ENTER to continue...\n")
-    print(install_note)
-    proceed = input("Do you want to proceed with the setup? (yes/NO) ").lower().strip()
-    if not proceed== "yes":
-        sys.exit("Setup aborted.")
-    
-    # Make a venv and install requirements
-    try:
-        import pip
-    except ImportError as e:
-        sys.exit(f"Failed to import pip. Please make sure pip is available in this Python install. Error {e}.")
+    if os.getenv("SWAN_LIB_DIR"):
+        print(install_note_swan)    
+    else:
+        print(install_note)
     
     assert sys.version_info.major == 3, "Please use Python version >= 3.11."
     python_version = (sys.version_info.major, sys.version_info.minor)
@@ -121,16 +131,6 @@ def main():
         json.dump(config, fp, indent=2)
     
     print("If you need a reminder on how to run the exercises, run 'python help.py'.")
-    
-    # Install requirements
-        # Which means it needs to check for pip
-        # And activate a venv
-            # Which depends on os
-                # Linux
-                # MacOS
-                # Windows
-    
-    # Dump manual
     
 
 if __name__ == "__main__":

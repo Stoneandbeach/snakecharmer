@@ -6,6 +6,8 @@ import requests
 from lib import snaketimer
 from lib.solutionhandler import SolutionHandler
 from argparse import ArgumentParser
+from tqdm import tqdm
+import subprocess
 import os, sys
 sys.path.append(os.getcwd())
 
@@ -19,13 +21,24 @@ length = 10000
 lst = list(range(length))
 n = 100
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("file")
     parser.add_argument("--skip-numpy", action="store_true", default=False)
     parser.add_argument("--flair", nargs="*")
     parser.add_argument("--dry-run", action="store_true", default=False)
-    parser.add_argument("--plot-estimation", action="store_true", default=False)
     return parser.parse_args()
 
 def main():
@@ -63,19 +76,24 @@ def main():
                 imported_modules.append(module_name)
                 if not args.skip_numpy and module_name == "numpy":
                     use_numpy = True
-                    print("Found numpy import. Assuming you want the input data as a numpy.ndarray. \
-To prevent this, add '--skip-numpy' when you run this script.")
     assert id, f"Could not read exercise ID from {file}.\nDid you change the EXERCISE ID block at the top of the file?"
         
     flair = []
     if args.flair:
         flair.extend(args.flair)
     else:
-        print(f"\nNote: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.")
+        print(f"\n{bcolors.WARNING}Note: you can manually add flair to your submission using '--flair FLAIR_1 FLAIR_2' if you want to indicate that you're using some specific design, function or library.{bcolors.ENDC}")
     if imported_modules:
         flair.extend(imported_module for imported_module in imported_modules if imported_module not in flair)
     else:
         flair.append("no-imports")
+    builtins = False
+    for item in solution.__code__.co_names:
+        print(item, item in dir(__builtins__))
+        if item in dir(__builtins__):
+            builtins = True
+    if not builtins:
+        flair.append("no-built-ins")
     
     # Check Python version. Should be >3.11
     assert sys.version_info.major == 3, "Please use Python version >= 3.11."
@@ -96,7 +114,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
     average_over_num = 50
     solution_handler = SolutionHandler(id, use_numpy=use_numpy)
     t_estimate = []
-    for i in range(average_over_num):
+    for i in tqdm(range(average_over_num)):
         sol_args = solution_handler.get_args()
         t_estimate.append(
             snaketimer.timeit(
@@ -118,7 +136,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
     # Main timing loop
     start = time.perf_counter()
     t = []
-    for i in range(iterations):
+    for _ in tqdm(range(iterations)):
         t.append(
             snaketimer.timeit(
                 stmt=solution,
@@ -127,7 +145,7 @@ To prevent this, add '--skip-numpy' when you run this script.")
             )
         )
     end = time.perf_counter()
-    print(f"Total evaluation time: {end - start:.1f} s")
+    print(f"\nTotal evaluation time: {end - start:.1f} s")
     
     print(f"Total time in work function: {sum(t):.1f} s")
     t = np.array(t)
@@ -137,8 +155,10 @@ To prevent this, add '--skip-numpy' when you run this script.")
     
     # Post-processing
     print()
-    result = solution(*solution_handler.get_args())
-    print(solution_handler.post_process(result))
+    result = solution(*solution_handler.get_args(check=True))
+    if post := solution_handler.post_process(result):
+        print(post)
+        print()
     
     # Check correctness of results
     match, string, message = solution_handler.check(result)
@@ -191,14 +211,21 @@ To prevent this, add '--skip-numpy' when you run this script.")
         with open(result_file_path, "w") as fp:
             json.dump(output, fp, indent=2)
         print(f"Wrote results to file: {result_file_path}")
-        upload = input("Would you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
+        upload = input("\nWould you like to upload this result to the Snakecharmer Results Board? (yes/NO) ").lower().strip()
         if upload == "yes":
-            url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
-            r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
-            if r.status_code == requests.codes.ok:
-                print("Results uploaded.")
+            if os.getenv("SWAN_LIB_DIR"):
+                r = subprocess.run(['./uploader', result_file_path])
+                print(f"Response from upload call: {r}")
+                print(f"See results at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
             else:
-                r.raise_for_status()
+                print("\nNot running on SWAN - results cannot be validated.")
+                url = "".join(["https://cernbox.cern.ch/remote.php/dav/public-files/lokc8ro60Xj1Wwr/", results_file_name])
+                r = requests.put(url=url, data=json.dumps(output, indent=2).encode("utf-8"))
+                if r.status_code in [requests.codes.ok, requests.codes.created]:
+                    print("Results uploaded. See them at https://stenastrand.web.cern.ch/ \nNote that they can take a moment (O(10 seconds)) to show up!")
+                else:
+                    print("Upload failed! The results board may no longer be available.")
+                    r.raise_for_status()
         
         print("\nEvaluation complete.")
     

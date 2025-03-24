@@ -1,18 +1,16 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:2|                                                     ##
+## id:1|                                                     ##
 ## -------------------EXERCISE DESCRIPTION------------------ ##
-## clamp_values:                                             ##
-## Given a matrix of integer values, constrain the range of  ##
-## those values to [0, 255] inclusive. Any number originally ##
-## in that range is to remain unchanged, while a number < 0  ##
-## should be set to 0 and a number > 255 to 255.             ##
+## Count the number of times a given number appears in a     ##
+## list of integers and return the result.                   ##
 ##                                                           ##
 ## Inputs:                                                   ##
-## matrix: list(n * list(m * int))                           ##
+## lst: list                                                 ##
+## number: int                                               ##
 ##                                                           ##
-## ## Returns:                                               ##
-## matrix: iterable(n * iterable(m * int))                   ##
+## Returns:                                                  ##
+## count: int                                                ##
 ##                                                           ##
 ## --------------------------IMPORTS------------------------ ##
 ## Imports - put any imports you use here                    ##
@@ -34,11 +32,10 @@
 ##       var = 2             <--- yes                        ##
 ##       lst = sorted(lst)   <--- also yes                   ##
 
-def solution(matrix: list):
-    for i in range(len(matrix)):
-        for j in range(len(matrix[i])):
-            if matrix[i][j] < 0:
-                matrix[i][j] = 0
-            elif matrix[i][j] > 255:
-                matrix[i][j] = 255
-    return matrix
+
+def solution(lst, number):
+    count = 0
+    for element in lst:
+        if element == number:
+            count += 1
+    return count

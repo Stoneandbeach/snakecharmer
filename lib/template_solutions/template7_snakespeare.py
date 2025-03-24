@@ -1,11 +1,16 @@
 ## ------------------------EXERCISE ID---------------------- ##
 ## Exercise id number - don't change this!                   ##
-## id:3|                                                     ##
+## id:7|                                                     ##
 ## ------------------------DESCRIPTION---------------------- ##
 ## This is a template used to provide a correct result for   ##
 ## checking exercise submissions. Please don't change this!  ##
+import numpy as np
 
 def solution(sonnets):
+    
+    if isinstance(sonnets, np.ndarray):
+        sonnets = str(sonnets)
+    
     word_dict = dict()
     
     w1, w2, w3 = "", "", ""
