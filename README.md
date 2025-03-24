@@ -30,3 +30,7 @@ There is also an additional tool that lets you view the [bytecode](https://opens
 ### Inverted CERN School of Computing 2025
 
 This repo was built for an exercise session at the [Inverted CERN School of Computing 2025](https://indico.cern.ch/event/1468713/overview). I also had a talk at the school, covering how Python works internally and what consequences that has for performance: [Under the Hood of the Snake](https://indico.cern.ch/event/1468713/contributions/6275292/). The recording of this talk may be available at that link for those interested in delving deeper.
+
+### Timing tests
+
+In the timing_tests folder are scripts that I used to time different functions for said iCSC talk. They also have some additional bonuses, like showing bytecode.

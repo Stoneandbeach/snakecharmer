@@ -71,7 +71,10 @@ def main():
             if parts[0] == "from" or parts[0] == "import":
                 assert not in_code, f"Please put all imports under IMPORTS at the top of the script. Issue on line {l}:\n{line}"
                 assert "," not in line, f"Failed to analyse imports on line {l}. Please only import one module per line. Line in question:\n{line}"
-                module_name = parts[1]
+                if parts[0] == "from":
+                    module_name = parts[1] + "-" + parts[3]
+                else:
+                    module_name = parts[1]
                 print(f"Identified module {module_name} on line {l}.")
                 imported_modules.append(module_name)
                 if not args.skip_numpy and module_name == "numpy":
@@ -89,7 +92,6 @@ def main():
         flair.append("no-imports")
     builtins = False
     for item in solution.__code__.co_names:
-        print(item, item in dir(__builtins__))
         if item in dir(__builtins__):
             builtins = True
     if not builtins:

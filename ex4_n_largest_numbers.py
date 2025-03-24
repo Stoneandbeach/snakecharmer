@@ -40,9 +40,11 @@ def solution(lst, n):
         this_largest = 0
         largest_index = 0
         for n, num in enumerate(lst):
+            # Check if the current number is the largest so far, and store it and its index
             if num > this_largest:
                 this_largest = num
                 largest_index = n
+        # Store the largest number found, and remove if from lst
         largest.append(this_largest)
         lst.pop(largest_index)
     return largest
