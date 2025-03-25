@@ -15,6 +15,8 @@ Note that using Python 3.11 is recommended. This version of Python came with a l
 
 ### Usage
 
+**If you're from the iCSC025: note that the ability to upload results to the results board will not work until ~a few minutes before the exercise session starts!**
+
 Each exercise is contained in a Python script. Read the task described inside, edit the script to your heart's content (obeying the rules written within...), then test your solution by running\
 `python test_run.py SCRIPT_NAME.py`\
 replacing SCRIPT_NAME with the exercise script in question.
