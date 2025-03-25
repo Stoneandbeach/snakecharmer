@@ -264,7 +264,10 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
     def setup_count(self, length=100000, number=1):
         self.shuffle = False
         self.arg_count = 0
-        lists = [[random.randint(-5, 5) for _ in range(length)] for _ in range(5)]
+        if self.use_numpy:
+            lists = [np.array([random.randint(-5, 5) for _ in range(length)]) for _ in range(5)]
+        else:
+            lists = [[random.randint(-5, 5) for _ in range(length)] for _ in range(5)]
         return (lists, number)
     
     def get_count(self, check=False, **kwargs):
