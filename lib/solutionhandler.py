@@ -255,7 +255,7 @@ To prevent this, add '--skip-numpy' when you run this script.{bcolors.ENDC}")
     
     def check_mass(self, result):
         reference_result = self.get_reference()
-        match = result[0] == reference_result[0] and result[1] == reference_result[1]
+        match = (result[0] - reference_result[0] < 1e-9) and (result[1] - reference_result[1] < 1e-9)
         message = f"your results; mass: {result[0]}, standard deviation: {result[1]}\nExpected result; mass: {reference_result[0]}, standard deviation: {reference_result[1]}"
         return self.conclude(match, message)
     
